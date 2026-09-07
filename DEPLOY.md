@@ -72,7 +72,10 @@ sudo cp /opt/oryvex/deploy/oryvex.service /etc/systemd/system/oryvex.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now oryvex
 systemctl status oryvex --no-pager        # active (running)
-curl -I http://127.0.0.1:8012             # HTTP/1.1 200
+curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8012/   # 200
+# NB: use a GET. `curl -I` sends HEAD, which these routes don't allow, so it
+# returns "405 Method Not Allowed" with "allow: GET" — that means the app is
+# UP, not broken.
 journalctl -u oryvex -f                    # live logs (Ctrl-C to stop)
 ```
 
