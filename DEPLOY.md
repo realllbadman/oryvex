@@ -160,7 +160,7 @@ Changed a business value (payment methods, phone, thresholds)? Edit the **server
 
 | Symptom | Fix |
 |---|---|
-| 502 Bad Gateway | app not running → `journalctl -u oryvex -f`; check port 8012 |
+| 502 Bad Gateway | app not running → `journalctl -u oryvex -n 50 --no-pager`. Most common cause: a value in the server `.env` with an inline `# comment` — systemd does **not** strip those (only a `#` starting a line). Put comments on their own line. |
 | Change didn't show up | server `.env` still has the old value; or hard-refresh (assets are `?v=`-busted) |
 | Wrong site served on the domain | another vhost grabbed it — give this site its own `server_name` block and reload |
 | Orders save but no email | `SMTP_PASSWORD` blank in server `.env`, or `OWNER_EMAIL == SMTP_USER` |

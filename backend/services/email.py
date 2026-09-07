@@ -10,12 +10,14 @@ All sends are wrapped in try/except and log-and-return on failure so a mail
 outage never crashes a request or a BackgroundTask.
 """
 import os
+
+from backend.config import env_num
 from email.message import EmailMessage
 
 import aiosmtplib
 
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
-SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_PORT = int(env_num("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")
 # Gmail app-passwords are displayed with spaces; strip them for Gmail only.
 # Other providers (Titan, etc.) keep the password exactly as entered.

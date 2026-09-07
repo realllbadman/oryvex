@@ -9,6 +9,8 @@ POST /api/orders/  (TRAILING SLASH):
 import json
 import os
 
+from backend.config import env_num
+
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -20,17 +22,17 @@ from backend.services.coupons import validate_coupon
 
 router = APIRouter()
 
-MIN_ORDER = float(os.getenv("MIN_ORDER", "150"))
-FREE_SHIP_THRESHOLD = float(os.getenv("FREE_SHIP_THRESHOLD", "300"))
-INSURANCE_FEE = float(os.getenv("INSURANCE_FEE", "15"))
+MIN_ORDER = env_num("MIN_ORDER", "150")
+FREE_SHIP_THRESHOLD = env_num("FREE_SHIP_THRESHOLD", "300")
+INSURANCE_FEE = env_num("INSURANCE_FEE", "15")
 
 # Selectable shipping methods: key -> (label, price). Prices are env-overridable.
 SHIPPING_METHODS = {
     "free": ("Free Standard Shipping (business days)", 0.0),
     "priority": ("Priority Shipping — 2-3 business days",
-                 float(os.getenv("SHIP_PRIORITY", "20"))),
+                 env_num("SHIP_PRIORITY", "20")),
     "overnight": ("Overnight Shipping — next business day",
-                  float(os.getenv("SHIP_OVERNIGHT", "60"))),
+                  env_num("SHIP_OVERNIGHT", "60")),
 }
 
 

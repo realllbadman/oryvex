@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from backend.config import env_list, env_num, env_str
 from backend.database import Base, SessionLocal, engine, get_db
 from backend.models import Product
 
@@ -52,16 +53,14 @@ BUSINESS = {
     "direct_phone": _DIRECT,
     "direct_digits": _digits(_DIRECT),               # for sms:/tel:
     "direct_display": "+" + _digits(_DIRECT),        # always compact: +13184578486
-    "min_order": float(os.getenv("MIN_ORDER", "0")),
-    "free_ship_threshold": float(os.getenv("FREE_SHIP_THRESHOLD", "250")),
-    "flat_shipping": float(os.getenv("FLAT_SHIPPING", "15")),
-    "ship_priority": float(os.getenv("SHIP_PRIORITY", "20")),
-    "ship_overnight": float(os.getenv("SHIP_OVERNIGHT", "60")),
-    "insurance_fee": float(os.getenv("INSURANCE_FEE", "15")),
-    "payment_methods": [m.strip() for m in os.getenv(
-        "PAYMENT_METHODS",
-        "Cash App,Zelle,Apple Pay,Chime,PayPal,Bitcoin"
-    ).split(",") if m.strip()],
+    "min_order": env_num("MIN_ORDER", "0"),
+    "free_ship_threshold": env_num("FREE_SHIP_THRESHOLD", "250"),
+    "flat_shipping": env_num("FLAT_SHIPPING", "15"),
+    "ship_priority": env_num("SHIP_PRIORITY", "20"),
+    "ship_overnight": env_num("SHIP_OVERNIGHT", "60"),
+    "insurance_fee": env_num("INSURANCE_FEE", "15"),
+    "payment_methods": env_list(
+        "PAYMENT_METHODS", "Cash App,Zelle,Apple Pay,Chime,PayPal,Bitcoin"),
 }
 
 CATEGORIES = [
