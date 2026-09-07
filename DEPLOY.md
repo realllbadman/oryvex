@@ -97,9 +97,14 @@ sudo nginx -t && sudo systemctl reload nginx
 sudo certbot certonly --nginx -d oryvexresearch.com -d www.oryvexresearch.com
 ```
 
-Then replace the port-80 block in `/etc/nginx/sites-available/oryvex` with the
-redirect + 443 pair — this exact block is already at the bottom of
-`deploy/nginx.conf`, commented out, so you can just uncomment it:
+Then swap in the finished HTTPS vhost — no hand-editing needed:
+
+```bash
+sudo cp /opt/oryvex/deploy/nginx-ssl.conf /etc/nginx/sites-available/oryvex
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+For reference, that file contains:
 
 ```nginx
 server {
