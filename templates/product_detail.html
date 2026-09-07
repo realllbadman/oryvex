@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% from "_product_card.html" import product_card %}
+{% block title %}{% if product %}{{ product.name }}{% else %}Not found{% endif %} — {{ business.name }}{% endblock %}
+
+{% block chips %}{% endblock %}
+
+{% block content %}
+{% if not product %}
+  <section class="section"><div class="wrap center">
+    <h2>Product not found</h2>
+    <p class="muted">This compound isn't in our catalog.</p>
+    <a class="btn btn-primary" href="/products">Back to catalog</a>
+  </div></section>
+{% else %}
+{% set class_labels = {
+  "research-peptides":"All Peptides","mist-applicators":"Mist Applicators"} %}
+{% set first = product.variants[0] if product.variants else None %}
+{% set hi = (product.variants | map(attribute='price') | max) if product.variants else product.price %}
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    <p class="crumb"><a href="/">Home</a> / <a href="/products">Shop</a> / {{ product.name }}</p>
+    <div class="pd-grid">
+      <!-- LEFT: media -->
+      <div class="pd-media">
+        <div class="pd-imgwrap">
+          <img src="{{ product.image }}" alt="{{ product.name }}" />
+          {% if product.original_price and product.original_price > product.price %}<div class="sale-flag">Sale!</div>{% endif %}
+          {% if not product.in_stock %}<div class="oos-overlay">Out of stock</div>{% endif %}
+        </div>
+      </div>
+
+      <!-- RIGHT: info -->
+      <div class="pd-info">
+        <h1 class="pd-title">{{ product.name }}</h1>
+        <p class="pd-range">
+          {% if product.variants and hi > product.price %}${{ '%.2f'|format(product.price) }} – ${{ '%.2f'|format(hi) }}{% else %}${{ '%.2f'|format(product.price) }}{% endif %}
+        </p>
+
+        {% if product.coa_file %}
+        <div class="coa-box">
+          <div>
+            <b>Certificate of Analysis</b>
+            <span>Third-party tested{% if product.coa_lab %} by {{ product.coa_lab }}{% endif %}</span>
+          </div>
+          <button class="btn btn-primary btn-sm"
+            onclick="PeptStore.openCOA('{{ product.slug }}','{{ product.name | e }}','{{ product.coa_file }}','{{ product.coa_lab or '' }}')">COA</button>
+        </div>
+        {% endif %}
+
+        {% if product.variants %}
+        <div class="pd-strength-label">Strength : <span id="pdStrengthLabel">{{ first.strength }}</span></div>
+        <div class="swatches" id="pdSwatches">
+          {% for v in product.variants %}
+          <button type="button" class="swatch{% if loop.first %} active{% endif %}"
+                  data-strength="{{ v.strength }}" data-price="{{ v.price }}">{{ v.strength }}</button>
+          {% endfor %}
+        </div>
+        <button type="button" class="swatch-clear" id="pdClear">✕ Clear</button>
+        {% endif %}
+
+        <div class="pd-price">
+          {% if product.original_price and product.original_price > product.price %}
+          <span class="was" id="pdWas">${{ '%.2f'|format(product.original_price) }}</span>
+          {% endif %}
+          <span class="now">$<span id="pdPrice">{{ '%.2f'|format(first.price if first else product.price) }}</span></span>
+        </div>
+
+        {% if product.in_stock %}
+        <p class="pd-stock">In stock</p>
+        {% else %}
+        <p class="pd-stock" style="color:#c62a38;">Out of stock</p>
+        {% endif %}
+
+        <div class="pd-buy">
+          {% if product.in_stock %}
+          <div class="qty">
+            <button type="button" id="qtyMinus" aria-label="Decrease">−</button>
+            <input id="pdQty" type="text" inputmode="numeric" value="1" aria-label="Quantity" />
+            <button type="button" id="qtyPlus" aria-label="Increase">+</button>
+          </div>
+          <button class="btn btn-primary" id="addToCartBtn" data-add-to-cart
+            data-slug="{{ product.slug }}" data-name="{{ product.name | e }}"
+            data-price="{{ first.price if first else product.price }}"
+            data-strength="{{ first.strength if first else '' }}"
+            data-image="{{ product.image }}">Add to Cart</button>
+          {% else %}
+          <button class="btn btn-outline" onclick="PeptStore.openQuote('Order Support','{{ product.name | e }}')">Notify When Available</button>
+          {% endif %}
+        </div>
+
+        <div class="promo-card">
+          <b>Order by phone or message</b>
+          <span>No payment is taken online — place your order and we'll contact you to confirm
+            stock and arrange payment ({{ business.payment_methods | join(' · ') }}).</span>
+        </div>
+
+        <div class="pd-meta">
+          {% if product.molecular_formula %}<b>Molecular Formula:</b> {{ product.molecular_formula }}<br />{% endif %}
+          {% if product.cas_number %}<b>CAS Number:</b> {{ product.cas_number }}<br />{% endif %}
+          <b>Purity:</b> {{ product.purity or "—" }}<br />
+          <b>Form:</b> {{ product.form or "—" }}<br />
+          <b>Storage:</b> {{ product.storage or "—" }}<br />
+          {% if product.description %}<b>Description:</b> {{ product.description }}{% endif %}
+        </div>
+
+        <div class="ruo-banner" style="margin-top:22px;">
+          <strong>Research Use Only — Not for human consumption.</strong>
+          This material is intended strictly for in vitro laboratory research.
+        </div>
+      </div>
+    </div>
+
+    <!-- Description + notes -->
+    <div style="max-width:820px;margin-top:52px;">
+      {% if product.research_notes %}
+        <h3 style="font-size:17px;">Laboratory Notes</h3>
+        <ul class="notes-list">
+          {% for note in product.research_notes %}<li>{{ note }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <!-- Customer reviews -->
+    <div class="reviews-section" id="reviews" data-slug="{{ product.slug }}" style="max-width:820px;margin-top:52px;">
+      <div class="reviews-head">
+        <h2 style="font-size:22px;margin:0;">Customer Reviews</h2>
+        <div class="reviews-summary" id="revSummary"></div>
+      </div>
+      <div id="revList" class="rev-list"></div>
+    </div>
+
+    <!-- Related -->
+    {% if related %}
+    <div style="margin-top:52px;">
+      <h2 style="font-size:22px;">Related Compounds</h2>
+      <div class="grid" style="margin-top:18px;">
+        {% for p in related %}{{ product_card(p) }}{% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+(function () {
+  var sec = document.getElementById("reviews");
+  if (!sec) return;
+  var slug = sec.getAttribute("data-slug");
+  function stars(n) { var f = Math.round(n); return "★★★★★".slice(0, f) + "☆☆☆☆☆".slice(0, 5 - f); }
+  function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+  function load() {
+    fetch("/api/reviews/" + encodeURIComponent(slug)).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d.count) { sec.style.display = "none"; return; }   // no reviews → hide the section
+      document.getElementById("revSummary").innerHTML =
+        '<span class="rev-stars">' + stars(d.average) + '</span> <b>' + d.average +
+        '</b> <span class="muted">out of 5 · ' + d.count + ' review' + (d.count === 1 ? '' : 's') + '</span>';
+      document.getElementById("revList").innerHTML = (d.reviews || []).map(function (rv) {
+        var date = new Date(rv.created_at).toLocaleDateString();
+        return '<div class="rev-item"><div class="rev-item-head"><span class="rev-stars">' + stars(rv.rating) +
+          '</span> <b>' + esc(rv.title || "") + '</b></div>' +
+          '<div class="rev-meta">' + esc(rv.name) + ' · ' + date + '</div>' +
+          (rv.body ? '<p class="rev-body">' + esc(rv.body) + '</p>' : '') + '</div>';
+      }).join("");
+    }).catch(function () { sec.style.display = "none"; });
+  }
+
+  load();
+})();
+</script>
+{% endif %}
+{% endblock %}

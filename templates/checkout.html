@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+{% block title %}Checkout — {{ business.name }}{% endblock %}
+{% block chips %}{% endblock %}
+
+{% block content %}
+{% set us_states = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"] %}
+{% set ca_provinces = ["Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Northwest Territories","Nova Scotia","Nunavut","Ontario","Prince Edward Island","Quebec","Saskatchewan","Yukon"] %}
+{% set major_cities = ["New York, NY","Los Angeles, CA","Chicago, IL","Houston, TX","Phoenix, AZ","Philadelphia, PA","San Antonio, TX","San Diego, CA","Dallas, TX","San Jose, CA","Austin, TX","Jacksonville, FL","Columbus, OH","Charlotte, NC","San Francisco, CA","Indianapolis, IN","Seattle, WA","Denver, CO","Washington, DC","Boston, MA","Nashville, TN","Las Vegas, NV","Portland, OR","Miami, FL","Atlanta, GA","Detroit, MI","Minneapolis, MN","Tampa, FL","Orlando, FL","New Orleans, LA","Toronto, ON","Montreal, QC","Vancouver, BC","Calgary, AB","Ottawa, ON","Edmonton, AB","Winnipeg, MB"] %}
+<section class="section checkout-page" style="padding-top:0;">
+  <div class="wrap">
+    <h1 class="co-h1">Information</h1>
+
+
+    <div class="co-grid">
+      <!-- Customer form -->
+      <div class="co-card">
+        <form id="orderForm">
+          <div class="acct-box">
+            <div class="acct-head">
+              <div>
+                <b>Your research account</b>
+                <span>We use this to send your order confirmation and COAs.</span>
+              </div>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <input type="email" name="email" placeholder="Email address" required />
+            </div>
+          </div>
+
+          <h3 class="co-h2">Shipping address</h3>
+          <div class="row2">
+            <div class="field"><input name="first_name" placeholder="First name" required /></div>
+            <div class="field"><input name="last_name" placeholder="Last name" required /></div>
+          </div>
+          <button type="button" class="add-link" data-reveal="companyWrap">
+            <span class="al-ic">⊕</span> Add institution or organization (optional)
+          </button>
+          <div class="field hidden" id="companyWrap"><input name="company" placeholder="Institution or organization" /></div>
+          <div class="field"><input name="address" placeholder="Street address" /></div>
+          <button type="button" class="add-link" data-reveal="addr2Wrap">
+            <span class="al-ic">⊕</span> Add address line 2 (optional)
+          </button>
+          <div class="field hidden" id="addr2Wrap"><input id="addr2" placeholder="Apartment, suite, unit" /></div>
+          <div class="field">
+            
+            <select name="state">
+              <option value="">Select a state / province…</option>
+              <optgroup label="United States">
+                {% for s in us_states %}<option>{{ s }}</option>{% endfor %}
+              </optgroup>
+              <optgroup label="Canada">
+                {% for s in ca_provinces %}<option>{{ s }}</option>{% endfor %}
+              </optgroup>
+            </select>
+          </div>
+          <div class="field">
+            
+            <select name="city" id="citySelect">
+              <option value="">Select a city…</option>
+              {% for c in major_cities %}<option>{{ c }}</option>{% endfor %}
+              <option value="__other__">Other — enter my city…</option>
+            </select>
+          </div>
+          <div class="field hidden" id="otherCityWrap">
+            
+            <input id="otherCity" placeholder="Town / city" />
+          </div>
+          <div class="row2">
+            <div class="field"><input name="zip" placeholder="Postcode / ZIP" /></div>
+            <div class="field"><input name="country" value="United States (US)" placeholder="Country" /></div>
+          </div>
+          <div class="field">
+            
+            <select name="freight_region">
+              <option value="domestic">Domestic (US)</option>
+              <option value="canada">Canada</option>
+              <option value="europe">Europe</option>
+              <option value="uk">United Kingdom</option>
+              <option value="asia">Asia</option>
+              <option value="oceania">Oceania</option>
+              <option value="latam">Latin America</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <h3 class="co-h2">Researcher details</h3>
+          <div class="row2">
+            <div class="field">
+              
+              <select name="contact_pref"><option>Email</option><option>Phone</option><option>WhatsApp</option></select>
+            </div>
+            <div class="field"><input name="best_time" placeholder="Best time to reach you" /></div>
+          </div>
+          <div class="field"><input name="phone" placeholder="Phone" required /></div>
+          <div class="field"><textarea name="notes" placeholder="Order notes (optional)"></textarea></div>
+
+          <!-- Shipping protection, reference-style toggle -->
+          <label class="prot-box" id="insBox">
+            <span class="prot-ic">🛡</span>
+            <span class="prot-text">
+              <b>Shipping Protection</b>
+              <small>Yes, I would like to protect my package with shipping insurance
+                (+${{ '%.2f'|format(business.insurance_fee) }}).</small>
+            </span>
+            <input type="checkbox" id="insurance" data-fee="{{ business.insurance_fee }}" />
+            <span class="switch" aria-hidden="true"></span>
+          </label>
+
+          {% if business.payment_methods %}
+          <h3>Payment method</h3>
+          <p class="muted" style="font-size:13px;margin:-4px 0 10px;">
+            Choose how you'd like to pay — we confirm the details when we contact you.
+          </p>
+          <div class="pay-methods" id="payMethods">
+            {% for m in business.payment_methods %}
+            <label class="pay-opt">
+              <input type="radio" name="payment_method" value="{{ m }}" {% if loop.first %}required{% endif %} />
+              <span>{{ m }}</span>
+            </label>
+            {% endfor %}
+            <label class="pay-opt">
+              <input type="radio" name="payment_method" value="Other" />
+              <span>Other</span>
+            </label>
+          </div>
+          <div class="field hidden" id="otherPayWrap" style="margin-top:10px;">
+            <label>Enter your preferred payment method</label>
+            <input id="otherPayment" placeholder="e.g. Wise, Zelle, Venmo, wire transfer…" />
+          </div>
+          {% endif %}
+
+          <div class="cert-box">
+            <div class="checkbox-line">
+              <input type="checkbox" id="ageBox" />
+              <label for="ageBox">
+                I certify that I am 21 or older, that this purchase is made for laboratory
+                research, and that these materials are not for human or veterinary
+                consumption.
+              </label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-block co-submit" id="placeOrderBtn" type="submit" disabled>
+            Complete Your Order
+          </button>
+          <p class="muted" style="font-size:12px;text-align:center;margin:10px 0 0;">
+            Submitting does not charge you. We contact you to confirm &amp; arrange payment.
+          </p>
+        </form>
+      </div>
+
+      <!-- Order summary -->
+      <div class="co-card co-summary">
+        <h3 style="margin-top:0;">Order summary</h3>
+        <div id="coItems"></div>
+        <div class="divider"></div>
+
+        <label style="font-size:13px;font-weight:600;">Discount code</label>
+        <div class="coupon-row">
+          <input id="couponInput" placeholder="Enter code" />
+          <button type="button" class="btn btn-outline btn-sm" id="couponApply">Apply</button>
+        </div>
+        <p class="coupon-msg" id="couponMsg"></p>
+
+        <div class="summary-row"><span>Subtotal</span><span id="coSubtotal">$0.00</span></div>
+        <div class="summary-row discount hidden" id="coDiscountRow"><span id="coDiscountLabel">Discount</span><span id="coDiscount">-$0.00</span></div>
+
+        <div class="ship-block" id="shipBlock">
+          <div class="ship-title">Shipping method</div>
+          <label class="ship-opt" id="shipFreeOpt" hidden>
+            <input type="radio" name="ship_method" value="free" data-price="0" />
+            <span class="ship-info"><b>Free Standard Shipping</b><small>Business days</small></span>
+            <b class="ship-price">$0.00</b>
+          </label>
+          <label class="ship-opt" id="shipPriorityOpt">
+            <input type="radio" name="ship_method" value="priority" data-price="{{ business.ship_priority }}" checked />
+            <span class="ship-info"><b>Priority Shipping</b><small>2–3 business days</small></span>
+            <b class="ship-price">${{ '%.2f'|format(business.ship_priority) }}</b>
+          </label>
+          <label class="ship-opt" id="shipOvernightOpt">
+            <input type="radio" name="ship_method" value="overnight" data-price="{{ business.ship_overnight }}" />
+            <span class="ship-info"><b>Overnight Shipping</b><small>Next business day</small></span>
+            <b class="ship-price">${{ '%.2f'|format(business.ship_overnight) }}</b>
+          </label>
+        </div>
+
+        <div class="summary-row" id="coShippingRow"><span>Shipping</span><span id="coShipping">—</span></div>
+        <div class="summary-row hidden" id="coFreightRow"><span>International freight</span><span id="coFreight">$0.00</span></div>
+        <div class="summary-row hidden" id="coInsRow"><span>Shipping insurance</span><span id="coInsurance">$0.00</span></div>
+        <div class="summary-row total"><span>Total</span><span id="coTotal">$0.00</span></div>
+        <p class="coupon-msg err hidden" id="minWarn" style="margin-top:10px;font-size:13px;"></p>
+        <p class="muted" style="font-size:12px;margin-top:14px;">
+          Free standard shipping unlocks on orders over ${{ '%.0f'|format(business.free_ship_threshold) }}.
+          Pick a faster method or add insurance above; final total is confirmed before payment.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Success state -->
+<div class="modal" id="successModal">
+  <div class="modal-card">
+    <div class="modal-body center" style="padding:40px 30px;">
+      <div style="font-size:44px;">✅</div>
+      <h2 style="margin:12px 0 8px;">Order received</h2>
+      <p class="muted">We'll contact you shortly to confirm stock and arrange
+        payment. No payment has been taken.</p>
+      <a class="btn btn-primary" href="/products" style="margin-top:12px;">Continue Browsing</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var CART_KEY = "pep_cart";
+  var body = document.body;
+  var MIN = parseFloat(body.getAttribute("data-min-order") || "0");
+  var FREE = parseFloat(body.getAttribute("data-free-ship") || "400");
+  var FLAT = parseFloat(body.getAttribute("data-flat-ship") || "15");
+  var PHONE = body.getAttribute("data-business-phone") || "";
+  var SURCHARGE = { domestic:0, us:0, canada:100, latam:150, europe:175, uk:175, asia:200, oceania:250, other:250 };
+  var money = function (n) { return "$" + Number(n).toFixed(2); };
+
+  var COUPON_KEY = "pep_coupon";
+  var coupon = { code: "", discount: 0 };   // validated server-side
+  var shipTouched = false;                  // true once the user picks a method
+
+  function cart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch (e) { return []; } }
+  function subtotal() { return cart().reduce(function (s, c) { return s + c.price * c.qty; }, 0); }
+  function shipMethodEl() { return document.querySelector('input[name="ship_method"]:checked'); }
+  function region() { var el = document.querySelector('[name="freight_region"]'); return el ? el.value : "domestic"; }
+  function isIntl() { var r = region(); return r !== "domestic" && r !== "us"; }
+  function shipping() {
+    if (subtotal() === 0 || isIntl()) return 0;   // international → freight IS the shipping
+    var el = shipMethodEl();
+    return el ? (parseFloat(el.getAttribute("data-price")) || 0) : 0;
+  }
+  function insurance() {
+    if (subtotal() === 0) return 0;
+    var el = document.getElementById("insurance");
+    return (el && el.checked) ? (parseFloat(el.getAttribute("data-fee")) || 0) : 0;
+  }
+  function freight() { return subtotal() === 0 ? 0 : (SURCHARGE[region()] || 0); }
+  function discount() { return Math.min(coupon.discount || 0, subtotal()); }
+
+  function validateCoupon(code, opts) {
+    opts = opts || {};
+    var msg = document.getElementById("couponMsg");
+    if (!code) { coupon = { code: "", discount: 0 }; msg.textContent = ""; msg.className = "coupon-msg"; render(); return; }
+    fetch("/api/coupons/validate?code=" + encodeURIComponent(code) + "&subtotal=" + subtotal())
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.valid) {
+          coupon = { code: d.code, discount: d.discount };
+          localStorage.setItem(COUPON_KEY, d.code);
+          msg.textContent = d.message; msg.className = "coupon-msg ok";
+        } else {
+          coupon = { code: "", discount: 0 };
+          if (!opts.silent) { msg.textContent = d.message; msg.className = "coupon-msg err"; }
+          else { msg.textContent = ""; msg.className = "coupon-msg"; }
+        }
+        render();
+      }).catch(function () { msg.textContent = "Couldn't check that code."; msg.className = "coupon-msg err"; });
+  }
+
+  function render() {
+    var items = cart();
+    var box = document.getElementById("coItems");
+    if (!items.length) {
+      box.innerHTML = '<p class="muted">Your cart is empty. <a href="/products">Browse products</a>.</p>';
+    } else {
+      box.innerHTML = items.map(function (c) {
+        return '<div class="summary-row"><span>' + c.name +
+          (c.strength ? " (" + c.strength + ")" : "") + " × " + c.qty +
+          "</span><span>" + money(c.price * c.qty) + "</span></div>";
+      }).join("");
+    }
+    // Shipping options: once the order qualifies (>= threshold) ONLY Free
+    // Standard Shipping shows; below it, only the paid methods (Priority/Overnight).
+    var freeOpt = document.getElementById("shipFreeOpt");
+    var prioOpt = document.getElementById("shipPriorityOpt");
+    var overOpt = document.getElementById("shipOvernightOpt");
+    if (freeOpt && prioOpt && overOpt) {
+      var freeRadio = freeOpt.querySelector("input");
+      var prioRadio = prioOpt.querySelector("input");
+      var qualifies = subtotal() >= FREE;
+      freeOpt.hidden = !qualifies;
+      prioOpt.hidden = qualifies;
+      overOpt.hidden = qualifies;
+      if (qualifies) { freeRadio.checked = true; }        // only option when eligible
+      else if (freeRadio.checked) { prioRadio.checked = true; }  // dropped below → Priority
+    }
+    // Reflect selection state on the option cards.
+    Array.prototype.slice.call(document.querySelectorAll(".ship-opt")).forEach(function (o) {
+      var r = o.querySelector("input"); o.classList.toggle("on", !!(r && r.checked));
+    });
+    var insEl = document.getElementById("insurance");
+    var insBox = document.getElementById("insBox");
+    if (insBox) insBox.classList.toggle("on", !!(insEl && insEl.checked));
+
+    // International: freight replaces the domestic method — hide the method
+    // selector and the "Shipping" line so the customer isn't charged twice.
+    var intl = isIntl();
+    var shipBlock = document.getElementById("shipBlock");
+    if (shipBlock) shipBlock.hidden = intl;
+    document.getElementById("coShippingRow").classList.toggle("hidden", intl);
+
+    var sub = subtotal(), ship = shipping(), ins = insurance(), fr = freight(), disc = discount();
+    document.getElementById("coSubtotal").textContent = money(sub);
+    var dRow = document.getElementById("coDiscountRow");
+    if (disc > 0) {
+      dRow.classList.remove("hidden");
+      document.getElementById("coDiscountLabel").textContent = "Discount" + (coupon.code ? " (" + coupon.code + ")" : "");
+      document.getElementById("coDiscount").textContent = "-" + money(disc);
+    } else {
+      dRow.classList.add("hidden");
+    }
+    document.getElementById("coShipping").textContent = sub === 0 ? "—" : (ship === 0 ? "FREE" : money(ship));
+    var frRow = document.getElementById("coFreightRow");
+    if (fr > 0) { frRow.classList.remove("hidden"); document.getElementById("coFreight").textContent = money(fr); }
+    else { frRow.classList.add("hidden"); }
+    var insRow = document.getElementById("coInsRow");
+    if (ins > 0) { insRow.classList.remove("hidden"); document.getElementById("coInsurance").textContent = money(ins); }
+    else { insRow.classList.add("hidden"); }
+    document.getElementById("coTotal").textContent = money(Math.max(0, sub - disc) + ship + fr + ins);
+    updateSubmitState();
+  }
+
+  function belowMin() { var sub = subtotal(); return MIN > 0 && sub > 0 && sub < MIN; }
+
+  function updateSubmitState() {
+    var warn = document.getElementById("minWarn");
+    var empty = subtotal() === 0;
+    if (belowMin()) {
+      warn.textContent = "Minimum order is $" + MIN.toFixed(0) + ". Add $" +
+        (MIN - subtotal()).toFixed(2) + " more to check out.";
+      warn.classList.remove("hidden");
+    } else {
+      warn.classList.add("hidden");
+    }
+    // Keep the button clickable (unless the cart is empty) so clicking Place
+    // Order surfaces a clear message — for the 21+ box or the minimum — instead
+    // of silently doing nothing.
+    btn.disabled = empty;
+  }
+
+  var ageBox = document.getElementById("ageBox");
+  var btn = document.getElementById("placeOrderBtn");
+  ageBox.addEventListener("change", updateSubmitState);
+  var freightEl = document.querySelector('[name="freight_region"]');
+  if (freightEl) freightEl.addEventListener("change", render);
+
+  // Shipping method + insurance live in the summary card → recompute on change.
+  Array.prototype.slice.call(document.querySelectorAll('input[name="ship_method"]')).forEach(function (r) {
+    r.addEventListener("change", function () { shipTouched = true; render(); });
+  });
+  var insEl = document.getElementById("insurance");
+  if (insEl) insEl.addEventListener("change", render);
+
+  // City: reveal a manual field when "Other" is chosen.
+  var citySelect = document.getElementById("citySelect");
+  var otherCityWrap = document.getElementById("otherCityWrap");
+  var otherCity = document.getElementById("otherCity");
+  if (citySelect) citySelect.addEventListener("change", function () {
+    var isOther = this.value === "__other__";
+    if (otherCityWrap) otherCityWrap.classList.toggle("hidden", !isOther);
+    if (isOther && otherCity) otherCity.focus();
+  });
+
+  // Payment method: reveal the manual field when "Other" is chosen.
+  var otherWrap = document.getElementById("otherPayWrap");
+  var otherInput = document.getElementById("otherPayment");
+  Array.prototype.slice.call(document.querySelectorAll('input[name="payment_method"]')).forEach(function (r) {
+    r.addEventListener("change", function () {
+      var isOther = this.value === "Other" && this.checked;
+      if (otherWrap) otherWrap.classList.toggle("hidden", !isOther);
+      if (isOther && otherInput) otherInput.focus();
+    });
+  });
+  function chosenPayment() {
+    var sel = document.querySelector('input[name="payment_method"]:checked');
+    if (!sel) return null;
+    if (sel.value === "Other") return (otherInput && otherInput.value.trim()) || "Other (unspecified)";
+    return sel.value;
+  }
+
+  // Coupon: prefill from URL-captured code, apply on button / Enter.
+  var couponInput = document.getElementById("couponInput");
+  var stored = (localStorage.getItem(COUPON_KEY) || "");
+  if (stored) { couponInput.value = stored; validateCoupon(stored, { silent: true }); }
+  document.getElementById("couponApply").addEventListener("click", function () {
+    validateCoupon(couponInput.value.trim());
+  });
+  couponInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); validateCoupon(couponInput.value.trim()); }
+  });
+
+  document.getElementById("orderForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!ageBox.checked) {
+      var amsg = "Please tick the box confirming you're 21+ and that these products are for laboratory research use only.";
+      var line = document.querySelector(".checkbox-line");
+      if (line) {
+        line.classList.add("invalid");
+        line.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(function () { line.classList.remove("invalid"); }, 2500);
+      }
+      window.PeptStore && PeptStore.toast(amsg);
+      return;
+    }
+    var items = cart();
+    if (!items.length) { window.PeptStore && PeptStore.toast("Your cart is empty."); return; }
+    if (belowMin()) {
+      var msg = "Minimum order is $" + MIN.toFixed(0) + ". Add $" +
+        (MIN - subtotal()).toFixed(2) + " more to check out.";
+      var warn = document.getElementById("minWarn");
+      warn.textContent = msg; warn.classList.remove("hidden");
+      warn.scrollIntoView({ behavior: "smooth", block: "center" });
+      window.PeptStore && PeptStore.toast(msg);
+      return;
+    }
+
+    var form = e.target, data = {};
+    Array.prototype.slice.call(form.querySelectorAll("input, select, textarea")).forEach(function (el) {
+      if (el.name) data[el.name] = el.value;
+    });
+    if (citySelect && citySelect.value === "__other__") {
+      data.city = (otherCity && otherCity.value.trim()) || "";
+    }
+    data.age_confirmed = true;
+    data.coupon_code = coupon.code || null;
+    data.payment_method = chosenPayment();
+    data.shipping_method = (shipMethodEl() && shipMethodEl().value) || "priority";
+    data.insurance = !!(insEl && insEl.checked);
+    data.items = items.map(function (c) {
+      return { product_id: 0, name: c.name, strength: c.strength || null, unit_price: c.price, quantity: c.qty };
+    });
+    data.total = Math.max(0, subtotal() - discount()) + shipping() + freight() + insurance();
+
+    btn.disabled = true; btn.textContent = "Submitting…";
+    fetch("/api/orders/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).then(function (r) {
+      if (!r.ok) throw new Error("bad status " + r.status);
+      localStorage.removeItem(CART_KEY);
+      document.getElementById("successModal").classList.add("show");
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = "Place Order";
+      alert("We couldn't submit your order online." + (PHONE ? " Please call us at " + PHONE + " to place it." : " Please try again shortly."));
+    });
+  });
+
+  render();
+})();
+</script>
+{% endblock %}

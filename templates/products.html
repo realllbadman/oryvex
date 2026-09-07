@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "_product_card.html" import product_card %}
+{% block title %}Shop All Research Peptides — {{ business.name }}{% endblock %}
+{% block chips %}{% endblock %}{# in-page chip filter replaces the nav chips row #}
+
+{% block content %}
+<section class="section" style="padding-top:34px;">
+  <div class="wrap">
+    <span class="pill-light">Full Catalog</span>
+    <h1 class="hero-title" style="font-size:clamp(34px,6.5vw,76px);margin:16px 0 12px;">All Peptides</h1>
+    <p class="hero-sub" style="max-width:640px;">
+      Browse the complete {{ business.name }} lineup — size options visible
+      before you click, with COA access on every product.
+    </p>
+
+    <div class="catalog-search">
+      <span class="cs-ico">⌕</span>
+      <input type="search" id="searchInput" placeholder="Search peptides, sizes…" />
+    </div>
+
+    <div class="chips" id="catFilter">
+      <button class="chip active" data-cat="">All</button>
+      {% for c in categories %}<button class="chip" data-cat="{{ c.slug }}">{{ c.name }}</button>{% endfor %}
+    </div>
+
+    <div class="catalog-count"><span id="catCount">{{ products|length }}</span> Products</div>
+
+    <div class="grid" id="productGrid">
+      {% for p in products %}{{ product_card(p) }}{% endfor %}
+    </div>
+    <p class="center muted hidden" id="noResults" style="padding:44px 0;">No products match your search.</p>
+  </div>
+</section>
+{% endblock %}

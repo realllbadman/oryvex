@@ -1,0 +1,28 @@
+# systemd unit for the Oryvex Research store (port 8012)
+# Install: sudo cp deploy/oryvex.service /etc/systemd/system/oryvex.service
+#          sudo systemctl daemon-reload && sudo systemctl enable --now oryvex
+# Logs:    journalctl -u oryvex -f
+
+[Unit]
+Description=Oryvex Research Store (FastAPI/Uvicorn)
+After=network.target
+
+[Service]
+Type=simple
+# Adjust User and paths to your server.
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/oryvex
+# Use the project's virtualenv python (see README "VPS deploy").
+Environment="PATH=/opt/oryvex/.venv/bin"
+EnvironmentFile=/opt/oryvex/.env
+ExecStart=/opt/oryvex/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8012 --workers 2
+Restart=always
+RestartSec=3
+
+# Basic hardening
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

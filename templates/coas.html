@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Certificates of Analysis — {{ business.name }}{% endblock %}
+{% block chips %}{% endblock %}
+
+{% block content %}
+{% set cat_names = {
+  "glp1-agonists": "GLP-1 Agonists",
+  "advanced-weight-loss": "Advanced Weight Loss",
+  "growth-hormone-antiaging": "Growth Hormone & Antiaging",
+  "healing-recovery": "Healing & Recovery",
+  "cosmetic-longevity": "Cosmetic & Longevity",
+  "specialty-nad": "NAD+ & Specialty"
+} %}
+<section class="section" style="padding-top:30px;">
+  <div class="wrap">
+    <div class="coa-page-hero">
+      <span class="pill-light">Third-Party Tested · COA on Every Product</span>
+      <h1 class="hero-title" style="font-size:clamp(30px,4.5vw,52px);margin:16px 0 10px;">Certificates of Analysis</h1>
+      <p class="hero-sub" style="max-width:640px;">
+        Every {{ business.name }} compound ships with a Certificate of Analysis.
+        Search or filter below to view and download any certificate.
+      </p>
+    </div>
+
+    <div class="coa-filters">
+      <input type="search" id="coaSearch" placeholder="Search by product name…" />
+    </div>
+    <div class="chips" id="coaChips">
+      <button class="chip active" data-cat="">All Products</button>
+      {% for c in categories %}<button class="chip" data-cat="{{ c.slug }}">{{ c.name }}</button>{% endfor %}
+    </div>
+
+    <div class="coa-count"><span id="coaCount">{{ count }}</span> Certificates of Analysis</div>
+
+    <div class="coa-grid" id="coaGrid">
+      {% for p in products %}
+      <div class="coa-card" data-name="{{ p.name|e }}" data-cat="{{ p.category }}">
+        <div class="coa-card-head">
+          <div class="coa-ico">📄</div>
+          <div style="min-width:0;">
+            <div class="coa-card-name">{{ p.name }}</div>
+            <div class="coa-card-cat">{{ cat_names.get(p.category, "Research") }}</div>
+          </div>
+          <span class="coa-badge">99%+ PURE</span>
+        </div>
+        <div class="coa-card-body">
+          <div class="coa-trust">
+            <div><b>Third-Party Tested</b><span>HPLC + LC-MS</span></div>
+            <div><b>99%+ Purity</b><span>HPLC Verified</span></div>
+            <div><b>Endotoxin</b><span>Report Available</span></div>
+          </div>
+          <div class="coa-thumb"
+               onclick="PeptStore.openCOA('{{ p.slug }}','{{ p.name|e }}','{{ p.coa_file or '' }}','{{ p.coa_lab or '' }}')">
+            <img src="{{ p.coa_file }}" alt="Certificate of Analysis — {{ p.name }}" loading="lazy" />
+          </div>
+          <div class="coa-card-actions">
+            <button class="btn btn-primary btn-sm"
+              onclick="PeptStore.openCOA('{{ p.slug }}','{{ p.name|e }}','{{ p.coa_file or '' }}','{{ p.coa_lab or '' }}')">✓ View COA</button>
+            <a class="coa-eye" href="{{ p.coa_file }}" download title="Download certificate">↓</a>
+            <a class="btn btn-outline btn-sm" href="/products/{{ p.slug }}">Product</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <p class="center muted hidden" id="coaNoResults" style="padding:44px 0;">No certificates match your search.</p>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var search = document.getElementById("coaSearch");
+  var grid = document.getElementById("coaGrid");
+  var chips = document.getElementById("coaChips");
+  var cards = Array.prototype.slice.call(grid.querySelectorAll(".coa-card"));
+  var cat = "", q = "";
+
+  function apply() {
+    var shown = 0;
+    cards.forEach(function (c) {
+      var okCat = !cat || c.dataset.cat === cat;
+      var okQ = !q || (c.dataset.name || "").toLowerCase().indexOf(q) >= 0;
+      var show = okCat && okQ;
+      c.style.display = show ? "" : "none";
+      if (show) shown++;
+    });
+    document.getElementById("coaCount").textContent = shown;
+    document.getElementById("coaNoResults").classList.toggle("hidden", shown > 0);
+  }
+
+  search.addEventListener("input", function () { q = search.value.trim().toLowerCase(); apply(); });
+  chips.addEventListener("click", function (e) {
+    var b = e.target.closest(".chip"); if (!b) return;
+    chips.querySelectorAll(".chip").forEach(function (x) { x.classList.remove("active"); });
+    b.classList.add("active"); cat = b.dataset.cat; apply();
+  });
+
+  var urlCat = new URLSearchParams(location.search).get("category");
+  if (urlCat) { var b = chips.querySelector('[data-cat="' + urlCat + '"]'); if (b) b.click(); }
+})();
+</script>
+{% endblock %}

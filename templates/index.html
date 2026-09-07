@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% from "_product_card.html" import product_card %}
+{% block title %}{{ business.name }}{% endblock %}
+{% block chips %}{% endblock %}
+
+{% block content %}
+<!-- 1. HERO -->
+<section class="hero-dark">
+  <div class="hero-bg" style="background-image:url('/static/images/hero-molecules.jpg?v={{ asset_v }}')"></div>
+  <div class="hero-sheen"></div>
+  <div class="hero-dark-inner">
+    <h1 class="hero-dark-title">Precision Research Compounds</h1>
+    <p class="hero-eyebrow">For In Vitro Research Use Only</p>
+    <a class="btn btn-primary" href="/products">Shop Peptides</a>
+  </div>
+</section>
+
+<!-- 2. INDEPENDENTLY TESTED -->
+<section class="section tested-band">
+  <div class="wrap tested-stack">
+    <div class="tb-block">
+      <h2>Independently Tested Research Compounds</h2>
+      <p>All products are manufactured and tested to ensure consistency, purity, and
+         reliability for laboratory research.</p>
+    </div>
+    <div class="tb-block">
+      <h2>Third-Party Verified</h2>
+      <p>Each batch is independently tested by accredited laboratories. Certificates of
+         Analysis are published per product as they are received.</p>
+    </div>
+    <div class="tb-block" style="margin-bottom:0;">
+      <h2>Research Use Only</h2>
+      <p>All products sold are intended for laboratory and in vitro research purposes only.
+         Not for human or veterinary use.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. POPULAR PEPTIDES -->
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    <h2 class="sec-title" style="margin-bottom:34px;">Popular Peptides</h2>
+    <div class="grid">
+      {% for p in featured[:8] %}{{ product_card(p) }}{% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- 4. CRIMSON FEATURE BAND -->
+<section class="trio-band">
+  <div class="wrap">
+    <div class="trio">
+      <div class="tr">
+        <div class="tr-ic">
+          <svg viewBox="0 0 48 48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="20"/><path d="M15 24.5l6.5 6.5L34 18.5"/></svg>
+        </div>
+        <h3>Verified &gt;99% Purity</h3>
+        <p>Every compound undergoes comprehensive testing via HPLC and mass spectrometry
+           methods to confirm precise molecular composition and maximum stability.</p>
+      </div>
+      <div class="tr">
+        <div class="tr-ic">
+          <svg viewBox="0 0 48 48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h22v18H3z"/><path d="M25 20h9l6 7v5h-15z"/><circle cx="12" cy="35" r="3.5"/><circle cx="32" cy="35" r="3.5"/></svg>
+        </div>
+        <h3>Secure Shipping</h3>
+        <p>Your laboratory materials arrive in protected packaging with expedited
+           processing to preserve integrity throughout delivery.</p>
+      </div>
+      <div class="tr">
+        <div class="tr-ic">
+          <svg viewBox="0 0 48 48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 27v-4a15 15 0 0 1 30 0v4"/><rect x="4" y="26" width="8" height="12" rx="4"/><rect x="36" y="26" width="8" height="12" rx="4"/><path d="M38 38v2a5 5 0 0 1-5 5h-6"/></svg>
+        </div>
+        <h3>Dedicated Support</h3>
+        <p>Knowledgeable team members available to address scientific inquiries and
+           fulfillment requirements to keep your research on schedule.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. ABOUT -->
+<section class="section about-band">
+  <div class="wrap">
+    <h2 class="sec-title">About {{ business.name }}</h2>
+    <div class="about-grid" style="padding:0;">
+      <div>
+        <h4>About Us</h4>
+        <p>{{ business.name }} is a provider of laboratory-grade peptides created specifically
+           for scientific research purposes. Through established partnerships with accredited
+           manufacturing facilities, we obtain quality materials at competitive industry
+           prices. We take pride in offering value and clear technical information to advance
+           discoveries in peptide and protein research.</p>
+        <h4>Excellence. Support. Affordability.</h4>
+        <p>{{ business.name }} stands as your dependable source for high-purity research
+           peptides. Our commitment is to provide superior customer care and remarkable value,
+           ensuring researchers obtain premium-grade materials critical for their studies
+           without compromising excellence.</p>
+        <h4>Who We Serve</h4>
+        <p>We value every client partnership and remain committed to supporting scientists and
+           research institutions worldwide. We are grateful for your confidence in us as your
+           research collaborator.</p>
+      </div>
+      <div class="about-photo">
+        <img src="/static/images/about-lab.jpg?v={{ asset_v }}" alt="" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. FAQ -->
+<section class="section" id="faq" style="padding-top:0;">
+  <div class="wrap">
+    <h2 class="sec-title">Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item open">
+        <div class="faq-q"><span class="plus">−</span> Are your products for human use?</div>
+        <div class="faq-a">No. All products are intended strictly for laboratory research.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="plus">+</span> Do you provide dosing information?</div>
+        <div class="faq-a">No. {{ business.name }} does not provide any form of dosing or application guidance.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="plus">+</span> Do you provide COAs?</div>
+        <div class="faq-a">Yes. Third-party Certificates of Analysis are published per product as they are received. A product without one is marked "COA pending".</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="plus">+</span> How are orders shipped?</div>
+        <div class="faq-a">Orders ship discreetly with tracking provided. Free shipping starts at ${{ '%.0f'|format(business.free_ship_threshold) }}.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="plus">+</span> How does payment work?</div>
+        <div class="faq-a">No payment is taken online. After you place an order we contact you to confirm stock and arrange payment by {{ business.payment_methods | join(', ') }}.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. CLOSING CTA (flows into the footer gradient) -->
+<section class="closing">
+  <h2>Advance Your Science Now</h2>
+  <p>Discover our selection of verified, high-purity peptides developed for laboratory excellence.</p>
+  <a class="btn" href="/products">Shop Now</a>
+</section>
+{% endblock %}

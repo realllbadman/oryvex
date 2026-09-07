@@ -1,0 +1,48 @@
+{# Reusable product card — matches the reference shop grid. #}
+{% set class_labels = {
+  "research-peptides": "All Peptides",
+  "mist-applicators": "Mist Applicators"
+} %}
+{% macro product_card(p) %}
+{% set v0 = p.variants[0] if p.variants else none %}
+{% set hi = (p.variants | map(attribute='price') | max) if p.variants else p.price %}
+<div class="pcard" data-slug="{{ p.slug }}" data-name="{{ p.name | e }}"
+     data-category="{{ p.category }}" data-price="{{ p.price }}"
+     data-instock="{{ 1 if p.in_stock else 0 }}"
+     data-coa="{{ p.coa_file or '' }}" data-image="{{ p.image }}">
+  <div class="pcard-img">
+    <a href="/products/{{ p.slug }}" style="display:contents;">
+      <img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy" />
+    </a>
+    {% if p.original_price and p.original_price > p.price %}<div class="sale-flag">Sale!</div>{% endif %}
+    {% if not p.in_stock %}<div class="oos-overlay">Out of stock</div>{% endif %}
+    <div class="pcard-hover">
+      <button class="ph-btn" title="Add to wishlist" aria-label="Add to wishlist"
+        onclick="PeptStore.toast('Saved to your list')">♡</button>
+      {% if p.coa_file %}
+      <button class="ph-btn" title="View COA" aria-label="View COA"
+        onclick="PeptStore.openCOA('{{ p.slug }}','{{ p.name | e }}','{{ p.coa_file or '' }}','{{ p.coa_lab or '' }}')">⌕</button>
+      {% else %}
+      <a class="ph-btn" title="Quick view" aria-label="Quick view" href="/products/{{ p.slug }}">⌕</a>
+      {% endif %}
+    </div>
+    {% if p.in_stock %}
+    <a class="pcard-bag" href="/products/{{ p.slug }}" title="Select options" aria-label="Select options">🛍</a>
+    {% endif %}
+  </div>
+  <div class="pcard-body">
+    <span class="pcard-class">{{ class_labels.get(p.category, "Research") }}</span>
+    <a class="pcard-name" href="/products/{{ p.slug }}">{{ p.name }}</a>
+    <div class="price-row">
+      <div class="price">
+        {% if p.variants and hi > p.price %}
+          <span class="amt">${{ '%.2f'|format(p.price) }} – ${{ '%.2f'|format(hi) }}</span>
+        {% else %}
+          {% if p.original_price and p.original_price > p.price %}<span class="strike">${{ '%.2f'|format(p.original_price) }}</span>{% endif %}
+          <span class="amt">${{ '%.2f'|format(p.price) }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}

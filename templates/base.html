@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}{{ business.name }} — Precision Research Compounds{% endblock %}</title>
+  <meta name="description" content="{% block meta_desc %}Ultra-pure amino acid derivatives and proteins for the research community. Third-party tested, Certificate of Analysis available. For in vitro laboratory research use only.{% endblock %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="/static/images/favicon.png?v={{ asset_v }}" />
+  <link rel="icon" href="/static/favicon.ico?v={{ asset_v }}" sizes="any" />
+  <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png?v={{ asset_v }}" />
+  <link rel="stylesheet" href="/static/css/main.css?v={{ asset_v }}" />
+</head>
+<body
+  data-min-order="{{ business.min_order }}"
+  data-free-ship="{{ business.free_ship_threshold }}"
+  data-flat-ship="{{ business.flat_shipping }}"
+  data-business-phone="{{ business.phone }}">
+
+  <!-- ── AGE GATE (21+) — blocks the site on first visit ── -->
+  <div class="agegate" id="ageGate" hidden>
+    <div class="agegate-card">
+      <div class="brand head">{{ business.name }}</div>
+      <h2>Are you over 21 years of age?</h2>
+      <p>
+        This site supplies research-use-only materials. You must be
+        <strong>21 or older</strong> and agree that these products are for
+        laboratory research only — not for human or veterinary consumption.
+      </p>
+      <div class="agegate-actions">
+        <button class="btn btn-primary" id="ageAccept">Yes — I am 21+</button>
+        <button class="btn btn-outline" id="ageExit">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Sale bar with live countdown ── -->
+  <div class="promobar" id="promoBar">
+    <span class="pb-spark"></span>
+    <span class="pb-sale promo-text">Labor Day Sale</span>
+    <span class="pb-div">|</span>
+    <span class="pb-offer">Buy 1 Get 1 Free</span>
+    <span class="pb-scope">Sitewide</span>
+    <span class="pb-ends">Ends in</span>
+    <span class="promo-chip" id="promoCountdown">--</span>
+    <span class="pb-flag">🇺🇸</span>
+  </div>
+
+  <!-- ── Announcement / coupon bar (populated by JS when a code is active) ── -->
+  <div class="announce" id="announceBar" hidden>
+    <span id="announceText"></span>
+    <button class="announce-x" id="announceClear" title="Remove code">&times;</button>
+  </div>
+
+  <!-- ── Zone 1: dark trust strip ── -->
+  <div class="topstrip">
+    <div class="wrap topstrip-inner">
+      <div class="ts-left">
+        <span><span class="tick">✓</span>Third-Party Verified</span>
+        <span><span class="tick">✓</span>Discreet Tracked Shipping</span>
+        <span><span class="tick">✓</span>For In Vitro Research Use Only</span>
+      </div>
+      <div class="ts-right">
+        {% if business.whatsapp_digits %}<a class="ts-contact" href="https://wa.me/{{ business.whatsapp_digits }}" target="_blank" rel="noopener">
+          <span class="ts-ic">💬</span> WhatsApp {{ business.whatsapp_display }}
+        </a>{% endif %}
+        {% if business.direct_digits %}<a class="ts-contact" href="sms:{{ business.direct_digits }}">
+          <span class="ts-ic">✉️</span> Direct {{ business.direct_display }}
+        </a>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Header ── -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="/">
+        <span class="bd-main">Oryvex</span>
+        <span class="bd-sub">Research</span>
+      </a>
+      <nav class="nav-links">
+        <a href="/about">Pages</a>
+        <a href="/about">Blog</a>
+        <a href="/" class="active">Home</a>
+        <a href="/products">Shop</a>
+        <a href="#" class="js-ask">Contact Us</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn" id="searchBtn" title="Search" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </button>
+        <button class="icon-btn" id="calcBtn" title="Reconstitution calculator" aria-label="Calculator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.8 8.6a5 5 0 0 0-8.8-3.2A5 5 0 0 0 3.2 8.6c0 4.2 6 8.3 8.8 10.4 2.8-2.1 8.8-6.2 8.8-10.4Z"/></svg>
+        </button>
+        <button class="icon-btn" id="cartBtn" title="Cart" aria-label="Cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 7h14l-1.2 13H6.2L5 7Z"/><path d="M9 7V5.5a3 3 0 0 1 6 0V7"/></svg>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+        <button class="icon-btn nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="/">Home</a>
+      <a href="/products">Shop</a>
+      <a href="/products?category=mist-applicators">Mist Applicators</a>
+      <a href="/coas">COAs</a>
+      <a href="/about">About Us</a>
+      <a href="#" class="js-ask">Contact Us</a>
+      <a href="#" class="js-calc">Reconstitution Calculator</a>
+    </div>
+  </header>
+
+  <!-- ── Zone 4: category chips ── -->
+  {% block chips %}
+  <div class="wrap">
+    <div class="chips" id="catChips">
+      <a class="chip" href="/products" data-cat="">All</a>
+      {% for c in categories %}
+        <a class="chip" href="/products?category={{ c.slug }}" data-cat="{{ c.slug }}">{{ c.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endblock %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer (shares the closing CTA's gradient) ── -->
+  <footer class="footer footer-joined">
+    <div class="wrap">
+      <div class="footer-grid four">
+        <div>
+          <div class="f-mark">O</div>
+          <p class="f-blurb">
+            Ultra-pure amino acid derivatives and proteins manufactured for the
+            research community. Thoroughly analysed, supplied for in vitro
+            laboratory research only.
+          </p>
+          <a class="f-mail" href="mailto:{{ business.email }}">{{ business.email }}</a>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <a href="/products">Shop All</a>
+          <a href="/checkout">Shopping Cart</a>
+          <a href="/coas">Certificates</a>
+          <a href="/admin">Admin</a>
+        </div>
+        <div>
+          <h4>Information</h4>
+          <a href="/about">About Us</a>
+          <a href="/about#faq">FAQ</a>
+          <a href="#" onclick="PeptStore.openQuote('Order Support','');return false;">Shipping Policy</a>
+          <a href="#" onclick="PeptStore.openQuote('Bulk / Wholesale Quote','');return false;">Bulk &amp; Wholesale</a>
+          <a href="#" onclick="PeptStore.openQuote('Request COA','');return false;">Request a COA</a>
+        </div>
+        <div>
+          <h4>Get In Touch</h4>
+          <p class="f-blurb">Receive all the latest information on events, sales &amp; offers.</p>
+          <form class="nl-inline" id="nlFooter">
+            <input type="email" name="email" placeholder="Enter your email address..." required />
+            <button type="submit" aria-label="Subscribe">→</button>
+          </form>
+          <p class="f-blurb" style="margin-top:16px;">
+            {% if business.whatsapp_digits %}<a class="f-mail" href="https://wa.me/{{ business.whatsapp_digits }}" target="_blank" rel="noopener">WhatsApp {{ business.whatsapp_display }}</a>{% endif %}
+            {% if business.direct_digits %}<a class="f-mail" href="sms:{{ business.direct_digits }}">iMessage {{ business.direct_display }}</a>{% endif %}
+          </p>
+        </div>
+      </div>
+
+    </div>
+    <div class="footer-legal">
+    <div class="wrap">
+      <div class="footer-bottom">
+        <span>&copy;{{ now_year }} {{ business.name }}. All rights reserved.</span>
+        <span class="fb-pay">{% for m in business.payment_methods %}<span>{{ m }}</span>{% endfor %}</span>
+      </div>
+
+      <div class="disclaimer">
+        <strong>FDA DISCLAIMER</strong><br />
+        The statements on this website have not been evaluated by the U.S. Food and Drug
+        Administration. The products and information provided by {{ business.name }} are not
+        intended to diagnose, treat, cure, or prevent any disease. {{ business.name }} is a
+        research chemical supplier. We are not a compounding pharmacy or compounding facility as
+        defined under Section 503A of the Federal Food, Drug, and Cosmetic Act, nor are we an
+        outsourcing facility as defined under Section 503B. All products are sold for research,
+        laboratory, or analytical purposes only, and are not for human consumption.
+      </div>
+    </div>
+    </div>
+  </footer>
+
+  <!-- ── Cart drawer ── -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="cartDrawer" aria-label="Cart">
+    <div class="drawer-head">
+      <h3>Your Cart</h3>
+      <button class="close-x" data-close="cart">&times;</button>
+    </div>
+    <div class="drawer-body" id="cartItems"></div>
+    <div class="drawer-foot">
+      <div class="summary-row"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div>
+      <div class="summary-row"><span>Shipping</span><span id="cartShipping">—</span></div>
+      <div class="summary-row total"><span>Total</span><span id="cartTotal">$0.00</span></div>
+      <a href="/checkout" class="btn btn-primary btn-block" style="margin-top:14px;">Checkout</a>
+      <p class="muted" style="font-size:12px;text-align:center;margin:10px 0 0;">
+        {% if business.min_order %}Minimum order ${{ '%.0f'|format(business.min_order) }} · {% endif %}Free shipping starts at ${{ '%.0f'|format(business.free_ship_threshold) }}<br />
+        No payment taken online — we contact you to confirm &amp; arrange payment.
+      </p>
+    </div>
+  </aside>
+
+  <!-- ── Quote / Inquiry modal (posts to /api/bookings/) ── -->
+  <div class="modal" id="quoteModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="quoteTitle">Ask a Question</h3>
+        <button class="close-x" data-close="quote">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="quoteForm">
+          <div class="row2">
+            <div class="field"><label>First name</label><input name="first_name" required /></div>
+            <div class="field"><label>Last name</label><input name="last_name" required /></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Email</label><input type="email" name="email" required /></div>
+            <div class="field"><label>Phone</label><input name="phone" /></div>
+          </div>
+          <div class="field">
+            <label>Topic</label>
+            <select name="service">
+              <option>General Inquiry</option>
+              <option>Request COA</option>
+              <option>Bulk / Wholesale Quote</option>
+              <option>Order Support</option>
+            </select>
+          </div>
+          <div class="field"><label>Product of interest</label><input name="product_interest" /></div>
+          <div class="field"><label>Message</label><textarea name="details"></textarea></div>
+          <button class="btn btn-primary btn-block" type="submit">Send Inquiry</button>
+          <p class="muted" style="font-size:12px;text-align:center;margin:10px 0 0;">
+            All materials are supplied for laboratory research use only.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── COA viewer modal ── -->
+  <div class="modal" id="coaModal">
+    <div class="modal-card wide">
+      <div class="modal-head">
+        <h3 id="coaTitle">Certificate of Analysis</h3>
+        <button class="close-x" data-close="coa">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="coa-viewer" id="coaViewer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Newsletter / "Get 15% Off" modal ── -->
+  <div class="modal" id="newsletterModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Get 20% Off</h3>
+        <button class="close-x" data-close="newsletter">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="newsletterForm">
+          <p class="muted" style="margin-top:0;">Join our research mailing list and
+            we'll send you a discount code for your next order.</p>
+          <form id="nlForm">
+            <div class="row2">
+              <div class="field"><label>First name</label><input name="first_name" required /></div>
+              <div class="field"><label>Last name</label><input name="last_name" /></div>
+            </div>
+            <div class="field"><label>Email</label><input type="email" name="email" required /></div>
+            <button class="btn btn-primary btn-block" type="submit">Get My Code</button>
+            <p class="muted" style="font-size:12px;text-align:center;margin:10px 0 0;">
+              Research use only. Unsubscribe any time.
+            </p>
+          </form>
+        </div>
+        <div id="newsletterDone" class="center" style="display:none;padding:14px 0;">
+          <div style="font-size:40px;">🎉</div>
+          <h3 style="margin:8px 0;">Here's your code</h3>
+          <div class="code-box" id="nlCode">RESEARCH20</div>
+          <p class="muted" style="font-size:13px;">Applied automatically at checkout. It's also copied to your clipboard.</p>
+          <button class="btn btn-primary" id="nlApply">Shop &amp; Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Reconstitution calculator modal (research reference only) ── -->
+  <div class="modal" id="calcModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Reconstitution Calculator</h3>
+        <button class="close-x" data-close="calc">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="muted" style="margin-top:0;font-size:13px;">
+          Concentration reference for laboratory reconstitution. For research use
+          only — not dosing guidance.
+        </p>
+        <div class="row2">
+          <div class="field"><label>Peptide in vial (mg)</label><input type="number" id="calcMg" min="0" step="0.1" value="5" /></div>
+          <div class="field"><label>Solvent added (mL)</label><input type="number" id="calcMl" min="0" step="0.1" value="2" /></div>
+        </div>
+        <div class="field">
+          <label>Syringe type</label>
+          <select id="calcSyringe">
+            <option value="100">U-100 insulin (100 units / mL)</option>
+            <option value="50">U-50 insulin (50 units / mL)</option>
+            <option value="40">U-40 insulin (40 units / mL)</option>
+          </select>
+        </div>
+        <div class="calc-out" id="calcOut"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Smartsupp Live Chat -->
+  <script type="text/javascript">
+  var _smartsupp = _smartsupp || {};
+  _smartsupp.key = '0cb1e9684e977b0fcf4268af8b8b83c913d4f7eb';
+  window.smartsupp||(function(d) {
+    var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+    s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+    c.type='text/javascript';c.charset='utf-8';c.async=true;
+    c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+  })(document);
+  </script>
+  <noscript>Powered by <a href="https://www.smartsupp.com" target="_blank" rel="noopener">Smartsupp</a></noscript>
+
+  <script src="/static/js/main.js?v={{ asset_v }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

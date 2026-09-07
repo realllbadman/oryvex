@@ -1,0 +1,22 @@
+# secrets & local config
+.env
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# runtime data — DO NOT commit (back these up separately)
+oryvex.db
+oryvex.db-journal
+static/coa/*
+!static/coa/.gitkeep
+
+# os
+.DS_Store
+
+# local backups
+backups/
+
+# server runtime
+server.log
