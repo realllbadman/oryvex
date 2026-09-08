@@ -93,26 +93,51 @@ TIGHT = {"mots-c": 12}
 # head on a white sweep), so no flood fill can separate them cleanly. For those
 # we keep the photo intact and just recolour the backdrop to the card panel
 # grey, which is visually identical to a cutout on the site.
-# (Sep 8 re-shoot: the KPV applicator now has a red pump head, so it cuts out
-# cleanly like the rest — nothing needs this fallback at the moment.)
-KEEP_BG: set[str] = set()
+# Slugs that still need a hard alpha cut (backdrop unlike the panel grey).
+CUT_OUT: set[str] = set()
 PANEL = (236, 236, 236)
 
 
 def match_backdrop(im: Image.Image) -> Image.Image:
-    """Shift the whole image so its backdrop lands on the card panel grey."""
+    """Flat-field the studio backdrop onto the card panel grey.
+
+    These frames carry a vertical gradient (~182 at the top of the sweep, ~232
+    at the bottom), so one global shift leaves a visible ramp inside the tile.
+    Estimate the backdrop per row from the left/right margins — always sweep,
+    never product — smooth it, and shift each row onto PANEL. The product itself
+    is never touched.
+    """
     im = im.convert("RGB")
     a = np.asarray(im).astype(np.float32)
     h, w, _ = a.shape
-    ph, pw = max(2, h // 20), max(2, w // 20)
-    corners = np.concatenate([
-        a[:ph, :pw].reshape(-1, 3), a[:ph, -pw:].reshape(-1, 3),
-        a[-ph:, :pw].reshape(-1, 3), a[-ph:, -pw:].reshape(-1, 3),
-    ])
-    bg = np.median(corners, axis=0)
-    a = np.clip(a + (np.array(PANEL, dtype=np.float32) - bg), 0, 255)
-    out = Image.fromarray(a.astype(np.uint8), "RGB").convert("RGBA")
-    return out
+    m = max(4, w // 12)
+
+    margins = np.concatenate([a[:, :m, :], a[:, -m:, :]], axis=1)
+    row_bg = np.median(margins, axis=1)
+
+    k = max(3, h // 40) | 1
+    pad = np.pad(row_bg, ((k // 2, k // 2), (0, 0)), mode="edge")
+    kern = np.ones(k, dtype=np.float32) / k
+    row_bg = np.stack([np.convolve(pad[:, c], kern, mode="valid") for c in range(3)], axis=1)
+
+    a = a + (np.array(PANEL, dtype=np.float32) - row_bg)[:, None, :]
+    return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB")
+
+
+def trim_and_square(im: Image.Image, margin: float = 0.07) -> Image.Image:
+    """Crop to the product (its shadow included), then pad to a PANEL square."""
+    a = np.asarray(im.convert("RGB")).astype(np.int16)
+    diff = np.abs(a - np.array(PANEL, dtype=np.int16)).max(axis=2)
+    ys, xs = np.where(diff > 10)
+    if len(xs):
+        x0, x1, y0, y1 = int(xs.min()), int(xs.max()), int(ys.min()), int(ys.max())
+        px, py = int((x1 - x0) * margin), int((y1 - y0) * margin)
+        im = im.crop((max(0, x0 - px), max(0, y0 - py),
+                      min(im.width, x1 + px), min(im.height, y1 + py)))
+    side = max(im.size)
+    canvas = Image.new("RGB", (side, side), PANEL)
+    canvas.paste(im, ((side - im.width) // 2, (side - im.height) // 2))
+    return canvas
 
 
 def remove_bg(im: Image.Image, tol: int = TOL) -> Image.Image:
@@ -189,15 +214,24 @@ def remove_bg(im: Image.Image, tol: int = TOL) -> Image.Image:
 
 
 def process(src_path: str, slug: str = "") -> Image.Image:
+    """Normalise a studio photo onto the card panel — no alpha cut.
+
+    Flood-fill cutouts were damaging the vials: clear glass and the white label
+    are both close to the backdrop tone, so the fill leaked in through the glass
+    and chewed the label edge, leaving a detached shadow blob behind. These
+    backdrops are clean and even, so flat-fielding them to the panel colour
+    looks like a perfect cutout with none of the damage.
+
+    remove_bg() stays for photos shot on a backdrop unlike the panel grey.
+    Nothing in the current set needs it.
+    """
     im = Image.open(src_path)
     im.thumbnail((MAXDIM, MAXDIM), Image.LANCZOS)
-    if slug in KEEP_BG:
-        return match_backdrop(im)
-    rgba = remove_bg(im, TIGHT.get(slug, TOL))
-    bbox = rgba.getbbox()          # trim transparent margins
-    if bbox:
-        rgba = rgba.crop(bbox)
-    return rgba
+    if slug in CUT_OUT:
+        rgba = remove_bg(im, TIGHT.get(slug, TOL))
+        bbox = rgba.getbbox()
+        return rgba.crop(bbox) if bbox else rgba
+    return trim_and_square(match_backdrop(im))
 
 
 def main():
