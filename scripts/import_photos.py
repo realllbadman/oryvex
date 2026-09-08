@@ -29,38 +29,20 @@ MAPPING = {
     # red pumps on the mist applicators, identical label geometry throughout.
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.14.jpeg": "5-amino-1mq",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.15.jpeg": "bpc-157",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.16.jpeg": "ahk-cu",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.17.jpeg": "ara-290",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.18.jpeg": "bacteriostatic-water",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.19.jpeg": "bpc-157-mist-applicator",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.20 (1).jpeg": "cjc-1295-no-dac",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.20 (2).jpeg": "cjc-1295-ipamorelin",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.20.jpeg": "cagrilintide",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.21 (1).jpeg": "foxo4-dri",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.21 (2).jpeg": "ghk-cu",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.21 (3).jpeg": "glow",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.21.jpeg": "epithalon",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.22 (1).jpeg": "glp-2",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.22 (2).jpeg": "glp-3rt",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.22 (3).jpeg": "glutathione",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.22.jpeg": "glp-1t",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23 (1).jpeg": "dsip-mist-applicator",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23 (2).jpeg": "igf1-lr3",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23 (3).jpeg": "ipamorelin",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23 (4).jpeg": "kisspeptin",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23.jpeg": "dsip",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.24 (1).jpeg": "kpv",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.24 (2).jpeg": "kpv-mist-applicator",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.24 (3).jpeg": "ll-37",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.24.jpeg": "klow",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.25 (1).jpeg": "mt-1",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.25 (2).jpeg": "mt-2",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.25 (3).jpeg": "mt-2-mist-applicator",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.25.jpeg": "mots-c",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.26 (1).jpeg": "nad-plus",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.26 (2).jpeg": "peg-mgf",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.26 (3).jpeg": "pinealon",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.26.jpeg": "n-acetyl-epitalon",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.27 (1).jpeg": "pt-141-mist-applicator",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.27 (2).jpeg": "selank",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.27 (3).jpeg": "selank-mist-applicator",
@@ -71,8 +53,30 @@ MAPPING = {
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.28.jpeg": "semax",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.29 (1).jpeg": "tesamorelin",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.29 (2).jpeg": "thymosin-alpha-1",
-    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.29 (3).jpeg": "wolverine-blend",
     "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.29.jpeg": "tb-500",
+
+    # ── Sep 8, 08.44 re-render: corrected strengths. Supersedes the 07.39
+    #    takes for these 20 slugs; every label verified against the ladder.
+    "WhatsApp Image 2026-09-08 at 08.44.39 (1).jpeg": "ahk-cu",                        # 100MG
+    "WhatsApp Image 2026-09-08 at 08.44.39 (2).jpeg": "cjc-1295-no-dac",               # 5MG
+    "WhatsApp Image 2026-09-08 at 08.44.39.jpeg": "adamax",                        # 5MG
+    "WhatsApp Image 2026-09-08 at 08.44.40 (1).jpeg": "epithalon",                     # 10MG
+    "WhatsApp Image 2026-09-08 at 08.44.40 (2).jpeg": "foxo4-dri",                     # 10MG
+    "WhatsApp Image 2026-09-08 at 08.44.40 (3).jpeg": "ghk-cu",                        # 50MG
+    "WhatsApp Image 2026-09-08 at 08.44.40.jpeg": "dsip",                          # 10MG
+    "WhatsApp Image 2026-09-08 at 08.44.41 (1).jpeg": "glp-2",                         # 10MG
+    "WhatsApp Image 2026-09-08 at 08.44.41 (2).jpeg": "glp-3rt",                       # 5MG
+    "WhatsApp Image 2026-09-08 at 08.44.41 (3).jpeg": "glutathione",                   # 600MG
+    "WhatsApp Image 2026-09-08 at 08.44.41.jpeg": "glow",                          # 70MG
+    "WhatsApp Image 2026-09-08 at 08.44.42 (1).jpeg": "ipamorelin",                    # 10MG
+    "WhatsApp Image 2026-09-08 at 08.44.42 (2).jpeg": "kisspeptin",                    # 10MG
+    "WhatsApp Image 2026-09-08 at 08.44.42 (3).jpeg": "klow",                          # 80MG
+    "WhatsApp Image 2026-09-08 at 08.44.42.jpeg": "igf1-lr3",                      # 1MG
+    "WhatsApp Image 2026-09-08 at 08.44.43 (1).jpeg": "n-acetyl-epitalon",             # 5MG
+    "WhatsApp Image 2026-09-08 at 08.44.43 (2).jpeg": "nad-plus",                      # 500MG
+    "WhatsApp Image 2026-09-08 at 08.44.43.jpeg": "kpv",                           # 10MG
+    "WhatsApp Image 2026-09-08 at 08.44.44 (1).jpeg": "wolverine-blend",               # 5MG/5MG
+    "WhatsApp Image 2026-09-08 at 08.44.44.jpeg": "peg-mgf",                       # 2MG
 }
 
 MAXDIM = 900          # cap output size
@@ -207,7 +211,13 @@ def main():
             continue
         src = os.path.join(SRC, fname)
         if not os.path.exists(src):
-            print(f"  MISSING {fname}")
+            # Sources are transient (WhatsApp downloads get cleared out); the
+            # cut-out PNGs under static/images/vials/ are the committed asset,
+            # so a missing source is only a note, not a failure.
+            if os.path.exists(os.path.join(OUT, f"{slug}.png")):
+                print(f"  skip    {slug:24} (source gone, existing PNG kept)")
+            else:
+                print(f"  MISSING {slug:24} ← {fname}")
             continue
         img = process(src, slug)
         dest = os.path.join(OUT, f"{slug}.png")
