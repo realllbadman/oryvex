@@ -9,10 +9,10 @@
 <div class="pcard" data-slug="{{ p.slug }}" data-name="{{ p.name | e }}"
      data-category="{{ p.category }}" data-price="{{ p.price }}"
      data-instock="{{ 1 if p.in_stock else 0 }}"
-     data-coa="{{ p.coa_file or '' }}" data-image="{{ p.image }}">
+     data-coa="{{ p.coa_file or '' }}" data-image="{{ p.image }}?v={{ asset_v }}">
   <div class="pcard-img">
     <a href="/products/{{ p.slug }}" style="display:contents;">
-      <img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy" />
+      <img src="{{ p.image }}?v={{ asset_v }}" alt="{{ p.name }}" loading="lazy" />
     </a>
     {% if p.original_price and p.original_price > p.price %}<div class="sale-flag">Sale!</div>{% endif %}
     {% if not p.in_stock %}<div class="oos-overlay">Out of stock</div>{% endif %}

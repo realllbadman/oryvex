@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% from "_product_card.html" import product_card %}
+{# `with context` so the macro can see asset_v for cache-busting #}
+{% from "_product_card.html" import product_card with context %}
 {% block title %}{{ business.name }}{% endblock %}
 {% block chips %}{% endblock %}
 

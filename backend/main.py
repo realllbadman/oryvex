@@ -165,6 +165,16 @@ def _asset_version() -> str:
             latest = max(latest, (STATIC_DIR / rel).stat().st_mtime)
         except OSError:
             pass
+    # Product art shares the token. nginx serves /static/ with `expires 7d`, so
+    # without this a re-shoot leaves visitors on stale images for a week — and a
+    # stale image against fresh CSS renders wrong (an old portrait cutout under
+    # object-fit:cover shows up zoomed and cropped).
+    try:
+        vials = STATIC_DIR / "images" / "vials"
+        latest = max([latest, vials.stat().st_mtime]
+                     + [f.stat().st_mtime for f in vials.glob("*.png")])
+    except (OSError, ValueError):
+        pass
     return str(int(latest)) or "1"
 
 

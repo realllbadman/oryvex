@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% from "_product_card.html" import product_card %}
+{# `with context` so the macro can see asset_v for cache-busting #}
+{% from "_product_card.html" import product_card with context %}
 {% block title %}{% if product %}{{ product.name }}{% else %}Not found{% endif %} — {{ business.name }}{% endblock %}
 
 {% block chips %}{% endblock %}
@@ -23,7 +24,7 @@
       <!-- LEFT: media -->
       <div class="pd-media">
         <div class="pd-imgwrap">
-          <img src="{{ product.image }}" alt="{{ product.name }}" />
+          <img src="{{ product.image }}?v={{ asset_v }}" alt="{{ product.name }}" />
           {% if product.original_price and product.original_price > product.price %}<div class="sale-flag">Sale!</div>{% endif %}
           {% if not product.in_stock %}<div class="oos-overlay">Out of stock</div>{% endif %}
         </div>
@@ -82,7 +83,7 @@
             data-slug="{{ product.slug }}" data-name="{{ product.name | e }}"
             data-price="{{ first.price if first else product.price }}"
             data-strength="{{ first.strength if first else '' }}"
-            data-image="{{ product.image }}">Add to Cart</button>
+            data-image="{{ product.image }}?v={{ asset_v }}">Add to Cart</button>
           {% else %}
           <button class="btn btn-outline" onclick="PeptStore.openQuote('Order Support','{{ product.name | e }}')">Notify When Available</button>
           {% endif %}
