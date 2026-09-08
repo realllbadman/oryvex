@@ -24,87 +24,62 @@ os.makedirs(OUT, exist_ok=True)
 
 # source filename → product slug
 MAPPING = {
-    # ── batch 1: Sep 6, 21:43 — all label strengths verified against the catalog ──
-    "WhatsApp Image 2026-09-06 at 21.43.23.jpeg":     "bpc-157",
-    "WhatsApp Image 2026-09-06 at 21.43.24.jpeg":     "5-amino-1mq",
-    "WhatsApp Image 2026-09-06 at 21.43.24 (1).jpeg": "ara-290",
-    "WhatsApp Image 2026-09-06 at 21.43.24 (2).jpeg": "bacteriostatic-water",
-    # 21.43.24 (3) is a second BPC-157 take — unused, kept as a spare
-    "WhatsApp Image 2026-09-06 at 21.43.25.jpeg":     "bpc-157-mist-applicator",
-    "WhatsApp Image 2026-09-06 at 21.43.25 (1).jpeg": "cagrilintide",
-
-    # ── batch 2: Sep 6, 22:11 — only the label strengths that exist in the ladder ──
-    "WhatsApp Image 2026-09-06 at 22.11.50 (1).jpeg": "cjc-1295-ipamorelin",   # 10mg
-    "WhatsApp Image 2026-09-06 at 22.11.50.jpeg":     "cjc-1295-no-dac",       # 10mg (tier 2)
-    "WhatsApp Image 2026-09-06 at 22.11.51 (4).jpeg": "glp-1t",                # 10mg
-    "WhatsApp Image 2026-09-06 at 22.11.52 (1).jpeg": "glp-3rt",               # 10mg (tier 2)
-    "WhatsApp Image 2026-09-06 at 22.11.53 (4).jpeg": "kpv-mist-applicator",   # 10mg
-    "WhatsApp Image 2026-09-06 at 22.11.54 (1).jpeg": "mots-c",                # 10mg
-    "WhatsApp Image 2026-09-06 at 22.11.54.jpeg":     "ll-37",                 # 5mg
-    # Strength on the label does not match the product's smallest size — kept
-    # anyway at the owner's request (photo quality over milligram accuracy).
-    "WhatsApp Image 2026-09-06 at 22.11.50 (2).jpeg": "dsip",          # label 5MG  · sold 10mg
-    "WhatsApp Image 2026-09-06 at 22.11.51 (1).jpeg": "foxo4-dri",     # label 5MG  · sold 10mg
-    "WhatsApp Image 2026-09-06 at 22.11.51 (2).jpeg": "ghk-cu",        # label 5MG  · sold 50/100mg
-    "WhatsApp Image 2026-09-06 at 22.11.51 (3).jpeg": "glow",          # label 5MG  · sold 70mg
-    "WhatsApp Image 2026-09-06 at 22.11.51.jpeg":     "epithalon",     # label 5MG  · sold 10/40mg
-    "WhatsApp Image 2026-09-06 at 22.11.52 (2).jpeg": "glutathione",   # label 5MG  · sold 600/1500mg
-    "WhatsApp Image 2026-09-06 at 22.11.52 (3).jpeg": "igf1-lr3",      # label 10MG · sold 1mg
-    "WhatsApp Image 2026-09-06 at 22.11.52.jpeg":     "glp-2",         # label 5MG  · sold 10mg
-    "WhatsApp Image 2026-09-06 at 22.11.53 (2).jpeg": "klow",          # label 5MG  · sold 80mg
-    "WhatsApp Image 2026-09-06 at 22.11.53 (3).jpeg": "kpv",           # label 5MG  · sold 10/30mg
-    "WhatsApp Image 2026-09-06 at 22.11.53.jpeg":     "ipamorelin",    # label 5MG  · sold 10mg
-    "WhatsApp Image 2026-09-06 at 22.11.53 (1).jpeg": "kisspeptin",    # label 5MG  · sold 10mg
-    #   ^ NOTE: this label misspells the compound as "KISSPETIN" (missing a P).
-    #     Installed at the owner's request — replace when a corrected render exists.
-    # ── batch 3: Sep 7, 10:23 ──
-    "WhatsApp Image 2026-09-07 at 10.23.58.jpeg":     "adamax",          # 10MG · sold 5mg
-    "WhatsApp Image 2026-09-07 at 10.24.06.jpeg":     "peg-mgf",         # 10MG · sold 2mg
-    "WhatsApp Image 2026-09-07 at 10.24.06 (1).jpeg": "nad-plus",        # 10MG · sold 500/1000mg
-    "WhatsApp Image 2026-09-07 at 10.24.07.jpeg":     "pinealon",        # 10MG · sold 10mg  ✓
-    "WhatsApp Image 2026-09-07 at 10.24.07 (1).jpeg": "wolverine-blend", # 10MG · sold 5mg/5mg
-    "WhatsApp Image 2026-09-07 at 10.31.57.jpeg":     "ss31",            # 10MG · sold 10mg  ✓
-    # ── batch 4: Sep 7, 12:18 ──
-    "WhatsApp Image 2026-09-07 at 12.18.23.jpeg":     "selank",            # 10MG · sold 10mg  OK
-    "WhatsApp Image 2026-09-07 at 12.18.23 (1).jpeg": "slu-pp-332",        # label reads "SLU-PP-32" (missing a 3)
-    "WhatsApp Image 2026-09-07 at 12.18.23 (2).jpeg": "tb-500",            # 10MG · sold 10mg  OK
-    "WhatsApp Image 2026-09-07 at 12.18.24.jpeg":     "thymosin-alpha-1",  # 10MG · sold 10mg  OK
-    "WhatsApp Image 2026-09-07 at 12.18.24 (1).jpeg": "pt-141",            # 10MG · sold 10mg  OK
-    "WhatsApp Image 2026-09-07 at 12.18.24 (2).jpeg": "mt-1",              # 10MG · sold 10mg  OK
-    "WhatsApp Image 2026-09-07 at 12.18.25.jpeg":     "mt-2",              # 10MG · sold 10mg  OK
-    "WhatsApp Image 2026-09-07 at 12.18.25 (1).jpeg": "n-acetyl-epitalon", # label reads "N-ACTEYL" · 10MG vs 5mg
-    "WhatsApp Image 2026-09-07 at 12.18.25 (2).jpeg": "ahk-cu",            # 100MG · sold 100mg  OK
-    # Unused spares: 21.43.24 (3) is a second BPC-157 take, 22.11.50 (3) a second DSIP.
-
-    # ── batch 3: Sep 7, 12.18 ──
-    "WhatsApp Image 2026-09-07 at 12.18.23.jpeg":     "selank",            # 10mg ✓
-    "WhatsApp Image 2026-09-07 at 12.18.23 (1).jpeg": "slu-pp-332",        # 10mg ✓ · label reads "SLU-PP-32"
-    "WhatsApp Image 2026-09-07 at 12.18.23 (2).jpeg": "tb-500",            # 10mg ✓
-    "WhatsApp Image 2026-09-07 at 12.18.24.jpeg":     "thymosin-alpha-1",  # 10mg ✓
-    "WhatsApp Image 2026-09-07 at 12.18.24 (1).jpeg": "pt-141",            # 10mg ✓
-    "WhatsApp Image 2026-09-07 at 12.18.24 (2).jpeg": "mt-1",              # 10mg ✓
-    "WhatsApp Image 2026-09-07 at 12.18.25.jpeg":     "mt-2",              # 10mg ✓
-    "WhatsApp Image 2026-09-07 at 12.18.25 (1).jpeg": "n-acetyl-epitalon", # label 10MG · sold 5mg · reads "N-ACTEYL"
-    "WhatsApp Image 2026-09-07 at 12.18.25 (2).jpeg": "ahk-cu",            # 100mg ✓
-
-    # ── batch 4: Sep 7, 15.35 — the last 7; every strength matches the catalog ──
-    "WhatsApp Image 2026-09-07 at 15.35.45.jpeg":     "semax",                   # 10mg ✓
-    "WhatsApp Image 2026-09-07 at 15.35.45 (1).jpeg": "tesamorelin",             # 2mg  ✓
-    "WhatsApp Image 2026-09-07 at 15.35.46.jpeg":     "dsip-mist-applicator",    # 5mg  ✓
-    "WhatsApp Image 2026-09-07 at 15.35.46 (2).jpeg": "mt-2-mist-applicator",    # 10mg ✓
-    "WhatsApp Image 2026-09-07 at 15.35.46 (3).jpeg": "pt-141-mist-applicator",  # 10mg ✓
-    "WhatsApp Image 2026-09-07 at 15.35.47.jpeg":     "selank-mist-applicator",  # 5mg  ✓
-    "WhatsApp Image 2026-09-07 at 15.35.47 (1).jpeg": "semax-mist-applicator",   # 5mg  ✓
-    # 15.35.46 (1) is a second DSIP applicator take labelled 10MG — unused,
-    # the product is sold in 5mg and the 5MG take above is the correct one.
-
+    # ── Sep 8 re-shoot: one consistent vial design across the whole catalog.
+    # Supersedes every earlier batch. Silver flip-off caps on lyophilised vials,
+    # red pumps on the mist applicators, identical label geometry throughout.
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.14.jpeg": "5-amino-1mq",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.15.jpeg": "bpc-157",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.16.jpeg": "ahk-cu",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.17.jpeg": "ara-290",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.18.jpeg": "bacteriostatic-water",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.19.jpeg": "bpc-157-mist-applicator",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.20 (1).jpeg": "cjc-1295-no-dac",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.20 (2).jpeg": "cjc-1295-ipamorelin",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.20.jpeg": "cagrilintide",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.21 (1).jpeg": "foxo4-dri",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.21 (2).jpeg": "ghk-cu",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.21 (3).jpeg": "glow",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.21.jpeg": "epithalon",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.22 (1).jpeg": "glp-2",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.22 (2).jpeg": "glp-3rt",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.22 (3).jpeg": "glutathione",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.22.jpeg": "glp-1t",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23 (1).jpeg": "dsip-mist-applicator",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23 (2).jpeg": "igf1-lr3",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23 (3).jpeg": "ipamorelin",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23 (4).jpeg": "kisspeptin",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.23.jpeg": "dsip",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.24 (1).jpeg": "kpv",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.24 (2).jpeg": "kpv-mist-applicator",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.24 (3).jpeg": "ll-37",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.24.jpeg": "klow",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.25 (1).jpeg": "mt-1",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.25 (2).jpeg": "mt-2",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.25 (3).jpeg": "mt-2-mist-applicator",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.25.jpeg": "mots-c",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.26 (1).jpeg": "nad-plus",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.26 (2).jpeg": "peg-mgf",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.26 (3).jpeg": "pinealon",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.26.jpeg": "n-acetyl-epitalon",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.27 (1).jpeg": "pt-141-mist-applicator",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.27 (2).jpeg": "selank",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.27 (3).jpeg": "selank-mist-applicator",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.27.jpeg": "pt-141",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.28 (1).jpeg": "semax-mist-applicator",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.28 (2).jpeg": "slu-pp-332",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.28 (3).jpeg": "ss31",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.28.jpeg": "semax",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.29 (1).jpeg": "tesamorelin",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.29 (2).jpeg": "thymosin-alpha-1",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.29 (3).jpeg": "wolverine-blend",
+    "WhatsApp Unknown 2026-09-08 at 07.41.28/WhatsApp Image 2026-09-08 at 07.39.29.jpeg": "tb-500",
 }
 
 MAXDIM = 900          # cap output size
-LIGHT = 206           # min per-channel value considered "background-light"
+LIGHT = 170           # min per-channel value considered "background-light"
 SAT = 30              # max (max-min channel) considered "neutral" (unsaturated)
 EDGE = 13             # gradient above this = vial silhouette → flood stops here
-TOL = 26              # per-channel distance from the sampled backdrop colour
+TOL = 30              # per-channel distance from a sampled backdrop colour
 
 # Products whose body is nearly the same tone as the backdrop need a tighter
 # match, or the flood fill walks straight through them.
@@ -114,7 +89,9 @@ TIGHT = {"mots-c": 12}
 # head on a white sweep), so no flood fill can separate them cleanly. For those
 # we keep the photo intact and just recolour the backdrop to the card panel
 # grey, which is visually identical to a cutout on the site.
-KEEP_BG = {"kpv-mist-applicator"}
+# (Sep 8 re-shoot: the KPV applicator now has a red pump head, so it cuts out
+# cleanly like the rest — nothing needs this fallback at the moment.)
+KEEP_BG: set[str] = set()
 PANEL = (236, 236, 236)
 
 
