@@ -783,6 +783,23 @@ PRODUCTS_SEED: list[dict] = [
         "in_stock": True, "badge": "Best Seller", "image": _IMG,
         "coa_file": None, "coa_lab": None,
     },
+    {
+        "slug": "hgh-kits",
+        "name": "HGH Kits",
+        "category": "research-peptides",
+        "cas_number": None,
+        "molecular_formula": None,
+        "purity": _PURITY, "form": _FORM_PEPTIDE, "storage": _STORE_COLD,
+        "price": 199.99, "original_price": 259.99,
+        "variants": [{"strength": "100IU (10x10IU)", "price": 199.99}],
+        "description": "A 191-amino-acid recombinant somatropin preparation "
+                       "supplied as a 10-vial kit for laboratory reference use.",
+        "research_notes": _pep_notes(
+            "Molecular target: growth hormone receptor signalling examined in "
+            "in vitro cell-culture assays."),
+        "in_stock": True, "badge": "New", "image": _IMG,
+        "coa_file": None, "coa_lab": None,
+    },
 ]
 
 

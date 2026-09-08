@@ -77,6 +77,7 @@ MAPPING = {
     "WhatsApp Image 2026-09-08 at 08.44.43.jpeg": "kpv",                           # 10MG
     "WhatsApp Image 2026-09-08 at 08.44.44 (1).jpeg": "wolverine-blend",               # 5MG/5MG
     "WhatsApp Image 2026-09-08 at 08.44.44.jpeg": "peg-mgf",                       # 2MG
+    "WhatsApp Image 2026-09-08 at 11.44.59.jpeg": "hgh-kits",           # 100IU (10x10IU)
 }
 
 MAXDIM = 900          # cap output size
