@@ -436,7 +436,7 @@
     data.shipping_method = (shipMethodEl() && shipMethodEl().value) || "priority";
     data.insurance = !!(insEl && insEl.checked);
     data.items = items.map(function (c) {
-      return { product_id: 0, name: c.name, strength: c.strength || null, unit_price: c.price, quantity: c.qty };
+      return { product_id: 0, slug: c.slug || null, name: c.name, strength: c.strength || null, unit_price: c.price, quantity: c.qty };
     });
     data.total = Math.max(0, subtotal() - discount()) + shipping() + freight() + insurance();
 

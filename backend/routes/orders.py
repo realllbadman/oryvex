@@ -9,13 +9,13 @@ POST /api/orders/  (TRAILING SLASH):
 import json
 import os
 
-from backend.config import env_num
+from backend.config import bundle_pct, bundle_unit_price, env_num
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
-from backend.models import Order
+from backend.models import Order, Product
 from backend.schemas import OrderCreate, OrderOut
 from backend.services import email
 from backend.services.coupons import validate_coupon
@@ -70,7 +70,31 @@ def create_order(
     if not payload.items:
         raise HTTPException(status_code=400, detail="Order contains no items")
 
-    subtotal = sum(i.unit_price * i.quantity for i in payload.items)
+    # Re-price every line from the catalog — never trust client-sent prices.
+    # The browser computes a bundle discount for display; the authoritative
+    # figure is recomputed here from the DB variant price and the quantity.
+    repriced: list[dict] = []
+    for item in payload.items:
+        data = item.model_dump()
+        product = None
+        if item.slug:
+            product = db.query(Product).filter(Product.slug == item.slug).first()
+        if product is None:
+            product = db.query(Product).filter(Product.name == item.name).first()
+        if product is not None:
+            variants = json.loads(product.variants) if product.variants else []
+            match = next(
+                (v for v in variants
+                 if str(v.get("strength", "")).lower() == str(item.strength or "").lower()),
+                None,
+            )
+            list_price = float(match["price"]) if match else float(product.price)
+            data["list_price"] = round(list_price, 2)
+            data["bundle_pct"] = bundle_pct(item.quantity)
+            data["unit_price"] = bundle_unit_price(list_price, item.quantity)
+        repriced.append(data)
+
+    subtotal = sum(i["unit_price"] * i["quantity"] for i in repriced)
 
     if MIN_ORDER and subtotal < MIN_ORDER:
         raise HTTPException(
@@ -92,7 +116,7 @@ def create_order(
         ship_label, shipping = resolve_shipping(payload.shipping_method, subtotal)
     total = round(subtotal - discount + shipping + insurance + freight, 2)
 
-    items = [i.model_dump() for i in payload.items]
+    items = repriced
     data = payload.model_dump()
     data["items"] = json.dumps(items)
     data["age_confirmed"] = 1 if payload.age_confirmed else 0

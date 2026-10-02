@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, field_validator
 # ─── Orders ──────────────────────────────────────────────────────
 class OrderItem(BaseModel):
     product_id: int
+    slug: Optional[str] = None      # used to re-price server-side
     name: str
     strength: Optional[str] = None
     unit_price: float

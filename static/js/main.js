@@ -23,6 +23,18 @@
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
   var money = function (n) { return "$" + Number(n).toFixed(2); };
 
+  // Bundle tiers — mirrors backend/config.py BUNDLE_TIERS. Display only; the
+  // server re-prices every line on submit.
+  var BUNDLES = [
+    { minQty: 1, pct: 0 }, { minQty: 3, pct: 30 },
+    { minQty: 5, pct: 35 }, { minQty: 10, pct: 40 }
+  ];
+  function bundlePct(qty) {
+    var pct = 0;
+    BUNDLES.forEach(function (t) { if (qty >= t.minQty) pct = t.pct; });
+    return pct;
+  }
+
   // ─── Cart storage ──────────────────────────────────────────────
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
@@ -35,11 +47,16 @@
     var cart = getCart();
     var key = item.slug + "|" + (item.strength || "");
     var found = cart.filter(function (c) { return (c.slug + "|" + (c.strength || "")) === key; })[0];
-    if (found) { found.qty += (item.qty || 1); }
+    if (found) {
+      found.qty += (item.qty || 1);
+      if (!found.listPrice) found.listPrice = Number(item.listPrice) || found.price;
+    }
     else {
       cart.push({
         slug: item.slug, name: item.name, strength: item.strength || "",
-        price: Number(item.price) || 0, qty: item.qty || 1, image: item.image || ""
+        price: Number(item.price) || 0,
+        listPrice: Number(item.listPrice) || Number(item.price) || 0,
+        qty: item.qty || 1, image: item.image || ""
       });
     }
     setCart(cart);
@@ -51,7 +68,12 @@
     var cart = getCart();
     var key = slug + "|" + (strength || "");
     cart = cart.map(function (c) {
-      if ((c.slug + "|" + (c.strength || "")) === key) c.qty += delta;
+      if ((c.slug + "|" + (c.strength || "")) === key) {
+        c.qty += delta;
+        // the bundle tier follows the quantity, so re-price off the list price
+        var list = Number(c.listPrice) || c.price;
+        c.price = Math.round(list * (100 - bundlePct(c.qty))) / 100;
+      }
       return c;
     }).filter(function (c) { return c.qty > 0; });
     setCart(cart);
@@ -492,13 +514,13 @@
           toast("Please choose a strength.");
           return;
         }
-        var qtyEl = document.getElementById("pdQty");
         addToCart({
           slug: add.getAttribute("data-slug"),
           name: add.getAttribute("data-name"),
           strength: add.getAttribute("data-strength"),
           price: add.getAttribute("data-price"),
-          qty: qtyEl ? Math.max(1, parseInt(qtyEl.value, 10) || 1) : 1,
+          listPrice: add.getAttribute("data-list-price"),
+          qty: document.getElementById("pdQty") ? pdQty() : 1,
           image: add.getAttribute("data-image")
         });
         return;
@@ -545,24 +567,62 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeAll(); });
   }
 
-  // ─── Product-detail strength swatches + quantity ───────────────
+  // ─── Product detail: strength, quantity and bundle tiers ───────
+  // Tiers mirror backend/config.py BUNDLE_TIERS. The server re-prices every
+  // line on submit, so this is display only — it can never set the real price.
+  function pdQty() {
+    var el = $("#pdQty");
+    return Math.max(1, parseInt(el && el.value, 10) || 1);
+  }
+
+  function refreshPd() {
+    var add = $("#addToCartBtn");
+    if (!add) return;
+    var list = parseFloat(add.getAttribute("data-list-price")) || 0;
+    var qty = pdQty();
+    var pct = bundlePct(qty);
+    var unit = Math.round(list * (100 - pct)) / 100;
+
+    add.setAttribute("data-price", unit.toFixed(2));
+
+    var now = $("#pdPrice");
+    if (now) now.textContent = unit.toFixed(2);
+    var was = $("#pdWas");
+    if (was) was.hidden = false;
+    var atc = $("#atcPrice");
+    if (atc) atc.textContent = money(unit * qty);
+
+    // highlight the tier this quantity actually earns
+    var tiles = $$(".bundle-tile");
+    var best = 0;
+    tiles.forEach(function (t, i) {
+      if (qty >= (parseInt(t.getAttribute("data-qty"), 10) || 1)) best = i;
+    });
+    tiles.forEach(function (t, i) { t.classList.toggle("active", i === best); });
+
+    var save = $("#pdSave");
+    if (save) {
+      save.hidden = pct === 0;
+      save.textContent = "You save " + pct + "% — " + money(list * qty - unit * qty);
+    }
+  }
+
   function applySwatch(btn) {
     var wrap = document.getElementById("pdSwatches");
     if (!wrap) return;
     var cleared = !btn;
     $$(".swatch", wrap).forEach(function (b) { b.classList.toggle("active", b === btn); });
 
-    var addBtn = $("#addToCartBtn");
-    var price = cleared ? "" : btn.getAttribute("data-price");
-    var strength = cleared ? "" : btn.getAttribute("data-strength");
-    if (addBtn) {
-      addBtn.setAttribute("data-price", price || addBtn.getAttribute("data-base-price") || "");
-      addBtn.setAttribute("data-strength", strength);
+    var add = $("#addToCartBtn");
+    if (add && !cleared) {
+      add.setAttribute("data-list-price", btn.getAttribute("data-price"));
+      add.setAttribute("data-strength", btn.getAttribute("data-strength"));
+    } else if (add) {
+      add.setAttribute("data-strength", "");
     }
-    var disp = $("#pdPrice");
-    if (disp && price) disp.textContent = Number(price).toFixed(2);
     var lbl = $("#pdStrengthLabel");
-    if (lbl) lbl.textContent = strength || "Choose an option";
+    if (lbl) lbl.textContent = cleared ? "Choose an option" : btn.getAttribute("data-strength");
+    refreshPd();
   }
 
   function initProductDetail() {
@@ -575,48 +635,29 @@
       var clear = $("#pdClear");
       if (clear) clear.addEventListener("click", function () { applySwatch(null); });
     }
+
     var qty = $("#pdQty");
     if (qty) {
       var step = function (d) {
-        var n = Math.max(1, (parseInt(qty.value, 10) || 1) + d);
-        qty.value = n;
-        var addBtn = $("#addToCartBtn");
-        if (addBtn) addBtn.setAttribute("data-qty", n);
+        qty.value = Math.max(1, pdQty() + d);
+        refreshPd();
       };
       $("#qtyMinus").addEventListener("click", function () { step(-1); });
       $("#qtyPlus").addEventListener("click", function () { step(1); });
+      qty.addEventListener("input", refreshPd);
     }
-  }
 
-  // ─── Scroll reveals ────────────────────────────────────────────
-  function initReveals() {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    // tag the things worth animating, in document order
-    var targets = $$([
-      ".tested-stack .tb-block", ".sec-title", ".section > .wrap > .grid > .pcard",
-      ".trio .tr", ".tested-cards .tc", ".about-grid > *", ".faq-item",
-      ".closing > *", ".catalog-search", ".footer-grid.four > *"
-    ].join(","));
-
-    targets.forEach(function (el, i) {
-      if (el.hasAttribute("data-anim")) return;
-      var kind = el.closest(".about-grid") ? (el.matches(".about-photo") ? "right" : "left")
-               : el.matches(".pcard") ? "zoom" : "up";
-      el.setAttribute("data-anim", kind);
-      el.style.transitionDelay = ((i % 4) * 70) + "ms";
-    });
-
-    if (!("IntersectionObserver" in window)) {
-      targets.forEach(function (el) { el.classList.add("in"); });
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    var bundles = document.getElementById("pdBundles");
+    if (bundles) {
+      bundles.addEventListener("click", function (e) {
+        var tile = e.target.closest(".bundle-tile");
+        if (!tile) return;
+        if (qty) qty.value = tile.getAttribute("data-qty") || 1;
+        refreshPd();
       });
-    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
-    targets.forEach(function (el) { io.observe(el); });
+    }
+
+    if ($("#addToCartBtn")) refreshPd();
   }
 
   // ─── Boot ──────────────────────────────────────────────────────

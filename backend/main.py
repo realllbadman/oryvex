@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from backend.config import env_list, env_num, env_str
+from backend.config import BUNDLE_TIERS, env_list, env_num, env_str
 from backend.database import Base, SessionLocal, engine, get_db
 from backend.models import Product
 
@@ -184,6 +184,7 @@ def _ctx(request: Request, **extra) -> dict:
         "categories": CATEGORIES,
         "asset_v": _asset_version(),
         "now_year": datetime.date.today().year,
+        "bundle_tiers": BUNDLE_TIERS,
     }
     ctx.update(extra)
     return ctx

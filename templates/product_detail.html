@@ -72,22 +72,56 @@
         <p class="pd-stock" style="color:#c62a38;">Out of stock</p>
         {% endif %}
 
-        <div class="pd-buy">
-          {% if product.in_stock %}
+        <div class="pd-qty-row">
+          <span class="pd-field-label">Quantity</span>
           <div class="qty">
             <button type="button" id="qtyMinus" aria-label="Decrease">−</button>
             <input id="pdQty" type="text" inputmode="numeric" value="1" aria-label="Quantity" />
             <button type="button" id="qtyPlus" aria-label="Increase">+</button>
           </div>
-          <button class="btn btn-primary" id="addToCartBtn" data-add-to-cart
+        </div>
+
+        <div class="bundle">
+          <span class="pd-field-label">Bundle &amp; save</span>
+          <div class="bundle-grid" id="pdBundles">
+            {% for t in bundle_tiers %}
+            <button type="button" class="bundle-tile{% if loop.first %} active{% endif %}"
+                    data-qty="{{ t.min_qty }}" data-pct="{{ t.pct }}">
+              {% if t.badge %}<span class="bundle-badge">{{ t.badge }}</span>{% endif %}
+              <span class="bundle-pips">
+                {% for _ in range(t.pips) %}<img src="{{ product.image }}?v={{ asset_v }}" alt="" />{% endfor %}
+              </span>
+              <span class="bundle-text">
+                <b>{{ t.label }}</b>
+                <small>{{ t.sub }}</small>
+              </span>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="pd-buy">
+          {% if product.in_stock %}
+          <button class="btn btn-primary btn-block" id="addToCartBtn" data-add-to-cart
             data-slug="{{ product.slug }}" data-name="{{ product.name | e }}"
+            data-list-price="{{ first.price if first else product.price }}"
             data-price="{{ first.price if first else product.price }}"
             data-strength="{{ first.strength if first else '' }}"
-            data-image="{{ product.image }}?v={{ asset_v }}">Add to Cart</button>
+            data-image="{{ product.image }}?v={{ asset_v }}">
+            <span>Add to cart</span>
+            <span class="atc-sep">·</span>
+            <span id="atcPrice">${{ '%.2f'|format(first.price if first else product.price) }}</span>
+            <span class="atc-arrow">→</span>
+          </button>
           {% else %}
-          <button class="btn btn-outline" onclick="PeptStore.openQuote('Order Support','{{ product.name | e }}')">Notify When Available</button>
+          <button class="btn btn-outline btn-block" onclick="PeptStore.openQuote('Order Support','{{ product.name | e }}')">Notify When Available</button>
           {% endif %}
         </div>
+
+        <p class="pd-ship-note">
+          Orders placed before 2pm ET ship the same business day.
+          Free shipping at ${{ '%.0f'|format(business.free_ship_threshold) }}.
+        </p>
 
         <div class="promo-card">
           <b>Order by phone or message</b>
