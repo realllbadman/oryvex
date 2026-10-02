@@ -1559,3 +1559,13 @@ body { background: #fff; }
 @media (max-width: 620px) {
   .bundle-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* price row: line total, struck list, save badge, per-vial figure */
+.pd-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; margin: 0 0 16px; }
+.pd-price .now { font-family: var(--head); font-size: 36px; font-weight: 700; color: #181818; }
+.pd-price .was { font-size: 17px; color: #9a9aa5; text-decoration: line-through; }
+.pd-price .save-badge {
+  background: var(--royal); color: #fff; font-size: 13px; font-weight: 600;
+  padding: 4px 11px; border-radius: 6px; letter-spacing: .01em;
+}
+.pd-price .each { font-family: var(--mono); font-size: 14px; color: #8a8a94; }

@@ -60,10 +60,15 @@
         {% endif %}
 
         <div class="pd-price">
+          <span class="now">$<span id="pdPrice">{{ '%.2f'|format(first.price if first else product.price) }}</span></span>
           {% if product.original_price and product.original_price > product.price %}
           <span class="was" id="pdWas">${{ '%.2f'|format(product.original_price) }}</span>
+          <span class="save-badge" id="pdSave">Save ${{ '%.2f'|format(product.original_price - product.price) }}</span>
+          {% else %}
+          <span class="was" id="pdWas" hidden></span>
+          <span class="save-badge" id="pdSave" hidden></span>
           {% endif %}
-          <span class="now">$<span id="pdPrice">{{ '%.2f'|format(first.price if first else product.price) }}</span></span>
+          <span class="each" id="pdEach" hidden></span>
         </div>
 
         {% if product.in_stock %}
@@ -105,6 +110,7 @@
           <button class="btn btn-primary btn-block" id="addToCartBtn" data-add-to-cart
             data-slug="{{ product.slug }}" data-name="{{ product.name | e }}"
             data-list-price="{{ first.price if first else product.price }}"
+            data-was-ratio="{{ '%.6f'|format((product.original_price / product.price) if (product.original_price and product.price) else 1) }}"
             data-price="{{ first.price if first else product.price }}"
             data-strength="{{ first.strength if first else '' }}"
             data-image="{{ product.image }}?v={{ asset_v }}">

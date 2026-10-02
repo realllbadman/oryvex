@@ -579,18 +579,32 @@
     var add = $("#addToCartBtn");
     if (!add) return;
     var list = parseFloat(add.getAttribute("data-list-price")) || 0;
+    var ratio = parseFloat(add.getAttribute("data-was-ratio")) || 1;
     var qty = pdQty();
     var pct = bundlePct(qty);
-    var unit = Math.round(list * (100 - pct)) / 100;
+
+    var unit = Math.round(list * (100 - pct)) / 100;   // per-vial after the tier
+    var lineNow = Math.round(unit * qty * 100) / 100;  // what you pay
+    var lineWas = Math.round(list * ratio * qty * 100) / 100;
+    var save = Math.round((lineWas - lineNow) * 100) / 100;
 
     add.setAttribute("data-price", unit.toFixed(2));
 
+    // headline price is the LINE total; the per-vial figure sits beside it
     var now = $("#pdPrice");
-    if (now) now.textContent = unit.toFixed(2);
+    if (now) now.textContent = lineNow.toFixed(2);
+
     var was = $("#pdWas");
-    if (was) was.hidden = false;
+    if (was) { was.hidden = save <= 0; was.textContent = money(lineWas); }
+
+    var badge = $("#pdSave");
+    if (badge) { badge.hidden = save <= 0; badge.textContent = "Save " + money(save); }
+
+    var each = $("#pdEach");
+    if (each) { each.hidden = qty <= 1; each.textContent = money(unit) + " each"; }
+
     var atc = $("#atcPrice");
-    if (atc) atc.textContent = money(unit * qty);
+    if (atc) atc.textContent = money(lineNow);
 
     // highlight the tier this quantity actually earns
     var tiles = $$(".bundle-tile");
@@ -599,12 +613,6 @@
       if (qty >= (parseInt(t.getAttribute("data-qty"), 10) || 1)) best = i;
     });
     tiles.forEach(function (t, i) { t.classList.toggle("active", i === best); });
-
-    var save = $("#pdSave");
-    if (save) {
-      save.hidden = pct === 0;
-      save.textContent = "You save " + pct + "% — " + money(list * qty - unit * qty);
-    }
   }
 
   function applySwatch(btn) {
