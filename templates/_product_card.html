@@ -33,14 +33,15 @@
   <div class="pcard-body">
     <span class="pcard-class">{{ class_labels.get(p.category, "Research") }}</span>
     <a class="pcard-name" href="/products/{{ p.slug }}">{{ p.name }}</a>
+    {% if p.variants %}
+    <div class="pcard-sizes">
+      {% for v in p.variants %}<span>{{ v.strength }}</span>{% if not loop.last %}<i>/</i>{% endif %}{% endfor %}
+    </div>
+    {% endif %}
     <div class="price-row">
       <div class="price">
-        {% if p.variants and hi > p.price %}
-          <span class="amt">${{ '%.2f'|format(p.price) }} – ${{ '%.2f'|format(hi) }}</span>
-        {% else %}
-          {% if p.original_price and p.original_price > p.price %}<span class="strike">${{ '%.2f'|format(p.original_price) }}</span>{% endif %}
-          <span class="amt">${{ '%.2f'|format(p.price) }}</span>
-        {% endif %}
+        {% if p.original_price and p.original_price > p.price %}<span class="strike">${{ '%.2f'|format(p.original_price) }}</span>{% endif %}
+        <span class="amt">${{ '%.2f'|format(p.price) }}</span>
       </div>
     </div>
   </div>
