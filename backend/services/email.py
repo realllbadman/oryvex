@@ -27,7 +27,6 @@ OWNER_EMAIL = os.getenv("OWNER_EMAIL", SMTP_USER)
 BUSINESS_NAME = os.getenv("BUSINESS_NAME", "Oryvex Research")
 BUSINESS_EMAIL = os.getenv("BUSINESS_EMAIL", SMTP_USER)
 OWNER_PHONE = os.getenv("OWNER_PHONE", "")
-WHATSAPP = os.getenv("WHATSAPP", "")
 PAYMENT_METHODS = [m.strip() for m in os.getenv(
     "PAYMENT_METHODS",
     "Bank Transfer,Osko,PayID,Bitcoin"
@@ -59,7 +58,7 @@ def _base_html(title: str, body: str) -> str:
     <div style="padding:22px 32px;background:#1a0f33;color:#cbb8e8;font-size:12px;line-height:1.6;">
       <div style="margin-bottom:10px;">
         <strong style="color:#ffffff;">{BUSINESS_NAME}</strong><br/>
-        Email: {BUSINESS_EMAIL}{(' &middot; Phone: ' + OWNER_PHONE) if OWNER_PHONE else ''}{(' &middot; WhatsApp: ' + WHATSAPP) if WHATSAPP else ''}
+        Email: {BUSINESS_EMAIL}{(' &middot; Phone: ' + OWNER_PHONE) if OWNER_PHONE else ''}
       </div>
       <div style="color:#8b7bb0;">{DISCLAIMER}</div>
     </div>

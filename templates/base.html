@@ -64,12 +64,6 @@
         <span><span class="tick">✓</span>For In Vitro Research Use Only</span>
       </div>
       <div class="ts-right">
-        {% if business.whatsapp_digits %}<a class="ts-contact" href="https://wa.me/{{ business.whatsapp_digits }}" target="_blank" rel="noopener">
-          <span class="ts-ic">💬</span> WhatsApp {{ business.whatsapp_display }}
-        </a>{% endif %}
-        {% if business.direct_digits %}<a class="ts-contact" href="sms:{{ business.direct_digits }}">
-          <span class="ts-ic">✉️</span> Direct {{ business.direct_display }}
-        </a>{% endif %}
       </div>
     </div>
   </div>
@@ -165,10 +159,6 @@
             <input type="email" name="email" placeholder="Enter your email address..." required />
             <button type="submit" aria-label="Subscribe">→</button>
           </form>
-          <p class="f-blurb" style="margin-top:16px;">
-            {% if business.whatsapp_digits %}<a class="f-mail" href="https://wa.me/{{ business.whatsapp_digits }}" target="_blank" rel="noopener">WhatsApp {{ business.whatsapp_display }}</a>{% endif %}
-            {% if business.direct_digits %}<a class="f-mail" href="sms:{{ business.direct_digits }}">iMessage {{ business.direct_display }}</a>{% endif %}
-          </p>
         </div>
       </div>
 
@@ -176,20 +166,8 @@
     <div class="footer-legal">
     <div class="wrap">
       <div class="footer-bottom">
-        <span>&copy;{{ now_year }} {{ business.name }}. All rights reserved.</span>
+        <span>&copy; 2019 {{ business.name }}. All rights reserved.</span>
         <span class="fb-pay">{% for m in business.payment_methods %}<span>{{ m }}</span>{% endfor %}</span>
-      </div>
-
-      <div class="disclaimer">
-        <strong>TGA DISCLAIMER</strong><br />
-        The statements on this website have not been evaluated by the Therapeutic Goods
-        Administration (TGA). The products and information provided by {{ business.name }} are not
-        intended to diagnose, treat, cure, or prevent any disease. {{ business.name }} is a
-        research chemical supplier based in {{ business.location }}. We are not a pharmacy or
-        compounding pharmacy, and our products are not therapeutic goods under the Therapeutic
-        Goods Act 1989 (Cth), nor are they included in the Australian Register of Therapeutic
-        Goods (ARTG). All products are sold for research, laboratory, or analytical purposes only,
-        and are not for human or veterinary consumption.
       </div>
     </div>
     </div>
