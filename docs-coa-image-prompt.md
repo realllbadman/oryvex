@@ -10,12 +10,12 @@ block at the bottom.
 > number and the real figures. A generated certificate is a **template** — fill
 > it with your own data, or leave the product showing "COA pending". The site is
 > built to show "COA pending" honestly and it costs you nothing to leave it
-> there. Never publish a fabricated purity figure, lab name, signature or
+> there. Never publish a fabricated purity figure, lab name, signature or 
 > accreditation.
 
----
+---  
 
-## The prompt (swap the ALL-CAPS fields)
+## The prompt (swap the ALL-CAPS fields)   
 
 ```
 A clean, professional one-page Certificate of Analysis document for a research
@@ -81,19 +81,19 @@ document scan quality, 300 DPI, portrait.
 blurry, warped text, misspelled text, lorem ipsum, handwriting, signature,
 stamp, seal, holograms, watermark, photograph of a desk, hands, perspective,
 tilt, drop shadow, dark background, colourful background, other brand names,
-FDA logo, accreditation logos, ISO logos, barcodes
+FDA logo, accreditation logos, ISO logos, barcodes 
 ```
 
 ---
 
 ## Fields to fill in
 
-| Field | Where it comes from |
-|---|---|
-| `COMPOUND-NAME` | product name, e.g. `BPC-157` |
-| `STRENGTH` | the size on that vial, e.g. `10 mg` |
-| `PURITY` | **your lab's actual figure**, e.g. `99.4%` |
-| `APPEARANCE` | `White lyophilized powder` (GHK-Cu is blue) |
+| Field | Where it comes from |                       
+|---|---|     
+| `COMPOUND-NAME` | product name, e.g. `BPC-157` |    
+| `STRENGTH` | the size on that vial, e.g. `10 mg` |       
+| `PURITY` | **your lab's actual figure**, e.g. `99.4%` |   
+| `APPEARANCE` | `White lyophilized powder` (GHK-Cu is blue) |   
 | `LOT` / `ACCESSION` / `CODE` | your own lot and accession references |
 | `LAB-NAME` / `COA-NUMBER` | the lab that actually ran it |
 | dates | received / reported / analysis / retest |
@@ -118,4 +118,4 @@ COA button opens it in the viewer, and it appears on `/coas`. **Remove COA**
 takes it back down. Uploaded files survive restarts and catalog re-syncs.
 
 Accepted: PDF, PNG, JPG, WEBP. A PDF is better than an image — it stays sharp
-when a customer zooms in.
+when a customer zooms in.                                   3      
