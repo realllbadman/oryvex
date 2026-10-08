@@ -68,7 +68,7 @@ class Order(Base):
     shipping_method = Column(Text, nullable=True)    # chosen shipping method label
     insurance = Column(Float, default=0.0)           # shipping insurance add-on ($)
 
-    age_confirmed = Column(Integer, default=0)       # 1 = confirmed 21+ research use
+    age_confirmed = Column(Integer, default=0)       # 1 = confirmed 18+ research use
     created_at = Column(DateTime, default=datetime.utcnow)
 
 

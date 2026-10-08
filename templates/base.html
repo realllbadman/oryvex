@@ -19,18 +19,18 @@
   data-flat-ship="{{ business.flat_shipping }}"
   data-business-phone="{{ business.phone }}">
 
-  <!-- ── AGE GATE (21+) — blocks the site on first visit ── -->
+  <!-- ── AGE GATE (18+) — blocks the site on first visit ── -->
   <div class="agegate" id="ageGate" hidden>
     <div class="agegate-card">
       <div class="brand head">{{ business.name }}</div>
-      <h2>Are you over 21 years of age?</h2>
+      <h2>Are you 18 years of age or older?</h2>
       <p>
         This site supplies research-use-only materials. You must be
-        <strong>21 or older</strong> and agree that these products are for
+        <strong>18 or older</strong> and agree that these products are for
         laboratory research only — not for human or veterinary consumption.
       </p>
       <div class="agegate-actions">
-        <button class="btn btn-primary" id="ageAccept">Yes — I am 21+</button>
+        <button class="btn btn-primary" id="ageAccept">Yes — I am 18+</button>
         <button class="btn btn-outline" id="ageExit">No</button>
       </div>
     </div>
@@ -39,13 +39,13 @@
   <!-- ── Sale bar with live countdown ── -->
   <div class="promobar" id="promoBar">
     <span class="pb-spark"></span>
-    <span class="pb-sale promo-text">Labor Day Sale</span>
+    <span class="pb-sale promo-text">Sale</span>
     <span class="pb-div">|</span>
     <span class="pb-offer">Buy 1 Get 1 Free</span>
     <span class="pb-scope">Sitewide</span>
     <span class="pb-ends">Ends in</span>
     <span class="promo-chip" id="promoCountdown">--</span>
-    <span class="pb-flag">🇺🇸</span>
+    <span class="pb-flag">🇦🇺</span>
   </div>
 
   <!-- ── Announcement / coupon bar (populated by JS when a code is active) ── -->
@@ -59,7 +59,8 @@
     <div class="wrap topstrip-inner">
       <div class="ts-left">
         <span><span class="tick">✓</span>Third-Party Verified</span>
-        <span><span class="tick">✓</span>Discreet Tracked Shipping</span>
+        <span><span class="tick">✓</span>Discreet Tracked Shipping from {{ business.location.split(",")[0] }}</span>
+        <span><span class="tick">✓</span>Prices in {{ business.currency }}</span>
         <span><span class="tick">✓</span>For In Vitro Research Use Only</span>
       </div>
       <div class="ts-right">
@@ -140,6 +141,7 @@
             laboratory research only.
           </p>
           <a class="f-mail" href="mailto:{{ business.email }}">{{ business.email }}</a>
+          <p class="f-blurb" style="margin-top:10px;">📍 {{ business.address or business.location }}</p>
         </div>
         <div>
           <h4>Quick Links</h4>
@@ -179,14 +181,15 @@
       </div>
 
       <div class="disclaimer">
-        <strong>FDA DISCLAIMER</strong><br />
-        The statements on this website have not been evaluated by the U.S. Food and Drug
-        Administration. The products and information provided by {{ business.name }} are not
+        <strong>TGA DISCLAIMER</strong><br />
+        The statements on this website have not been evaluated by the Therapeutic Goods
+        Administration (TGA). The products and information provided by {{ business.name }} are not
         intended to diagnose, treat, cure, or prevent any disease. {{ business.name }} is a
-        research chemical supplier. We are not a compounding pharmacy or compounding facility as
-        defined under Section 503A of the Federal Food, Drug, and Cosmetic Act, nor are we an
-        outsourcing facility as defined under Section 503B. All products are sold for research,
-        laboratory, or analytical purposes only, and are not for human consumption.
+        research chemical supplier based in {{ business.location }}. We are not a pharmacy or
+        compounding pharmacy, and our products are not therapeutic goods under the Therapeutic
+        Goods Act 1989 (Cth), nor are they included in the Australian Register of Therapeutic
+        Goods (ARTG). All products are sold for research, laboratory, or analytical purposes only,
+        and are not for human or veterinary consumption.
       </div>
     </div>
     </div>
@@ -201,12 +204,12 @@
     </div>
     <div class="drawer-body" id="cartItems"></div>
     <div class="drawer-foot">
-      <div class="summary-row"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div>
+      <div class="summary-row"><span>Subtotal</span><span id="cartSubtotal">A$0.00</span></div>
       <div class="summary-row"><span>Shipping</span><span id="cartShipping">—</span></div>
-      <div class="summary-row total"><span>Total</span><span id="cartTotal">$0.00</span></div>
+      <div class="summary-row total"><span>Total <small class="muted">({{ business.currency }})</small></span><span id="cartTotal">A$0.00</span></div>
       <a href="/checkout" class="btn btn-primary btn-block" style="margin-top:14px;">Checkout</a>
       <p class="muted" style="font-size:12px;text-align:center;margin:10px 0 0;">
-        {% if business.min_order %}Minimum order ${{ '%.0f'|format(business.min_order) }} · {% endif %}Free shipping starts at ${{ '%.0f'|format(business.free_ship_threshold) }}<br />
+        {% if business.min_order %}Minimum order A${{ '%.0f'|format(business.min_order) }} · {% endif %}Free shipping starts at A${{ '%.0f'|format(business.free_ship_threshold) }}<br />
         No payment taken online — we contact you to confirm &amp; arrange payment.
       </p>
     </div>

@@ -86,7 +86,7 @@
     <div class="about-grid" style="padding:0;">
       <div>
         <h4>About Us</h4>
-        <p>{{ business.name }} is a provider of laboratory-grade peptides created specifically
+        <p>{{ business.name }} is a {{ business.location.split(",")[0] }}-based provider of laboratory-grade peptides created specifically
            for scientific research purposes. Through established partnerships with accredited
            manufacturing facilities, we obtain quality materials at competitive industry
            prices. We take pride in offering value and clear technical information to advance
@@ -98,7 +98,7 @@
            without compromising excellence.</p>
         <h4>Who We Serve</h4>
         <p>We value every client partnership and remain committed to supporting scientists and
-           research institutions worldwide. We are grateful for your confidence in us as your
+           research institutions across Australia and beyond. We are grateful for your confidence in us as your
            research collaborator.</p>
       </div>
       <div class="about-photo">
@@ -127,7 +127,7 @@
       </div>
       <div class="faq-item">
         <div class="faq-q"><span class="plus">+</span> How are orders shipped?</div>
-        <div class="faq-a">Orders ship discreetly with tracking provided. Free shipping starts at ${{ '%.0f'|format(business.free_ship_threshold) }}.</div>
+        <div class="faq-a">Orders ship discreetly from {{ business.location }} with tracking provided — Australia Post Standard or Express Post within Australia, and international freight to most regions. Free standard shipping within Australia starts at A${{ '%.0f'|format(business.free_ship_threshold) }}.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q"><span class="plus">+</span> How does payment work?</div>

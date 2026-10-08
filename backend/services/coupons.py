@@ -26,7 +26,7 @@ def validate_coupon(db, code: str, subtotal: float) -> dict:
         result["message"] = "That code has expired."
         return result
     if subtotal < (coupon.min_subtotal or 0):
-        result["message"] = f"Requires a subtotal of at least ${coupon.min_subtotal:,.0f}."
+        result["message"] = f"Requires a subtotal of at least A${coupon.min_subtotal:,.0f}."
         return result
 
     if coupon.kind == "fixed":
@@ -36,7 +36,7 @@ def validate_coupon(db, code: str, subtotal: float) -> dict:
     discount = max(0.0, min(discount, subtotal))
 
     label = (f"{coupon.value:g}% off" if coupon.kind == "percent"
-             else f"${coupon.value:g} off")
+             else f"A${coupon.value:g} off")
     return {
         "valid": True, "code": norm, "discount": discount,
         "kind": coupon.kind, "value": coupon.value,

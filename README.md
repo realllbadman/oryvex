@@ -6,7 +6,7 @@ online payment is taken.
 
 - **Stack:** Python 3.12, FastAPI, Uvicorn (port **8012**), SQLAlchemy + SQLite
   (`oryvex.db`), Jinja2 templates, python-dotenv.
-- **Compliance-first:** every product is labelled *Research Use Only*, a 21+ age
+- **Compliance-first:** every product is labelled *Research Use Only*, a 18+ age
   gate blocks the site on first visit, a COA viewer appears on every product, and
   a research-use disclaimer is in every footer.
 
@@ -64,7 +64,7 @@ logged (`[email] skipped …`) instead of crashing.
 ## 3. How orders work (no online payment)
 
 1. Customer adds items to the cart and goes to **/checkout**.
-2. They must tick the **21+ / research-use** checkbox (submit stays disabled
+2. They must tick the **18+ / research-use** checkbox (submit stays disabled
    until they do). The order posts to `POST /api/orders/` with
    `age_confirmed: true`.
 3. The backend rejects any order without `age_confirmed` (**400**), computes
@@ -208,7 +208,7 @@ repo).
 
 ## 10. Compliance — owner responsibilities
 
-This software provides the compliance *structure* (RUO labelling, 21+ age gate,
+This software provides the compliance *structure* (RUO labelling, 18+ age gate,
 COA viewer, footer disclaimer, no human-use copy). **You, the owner, are
 responsible for the substance:**
 

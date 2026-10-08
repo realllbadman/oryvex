@@ -1,6 +1,6 @@
 /* ============================================================================
    Research Peptides — storefront client logic
-   - 21+ age gate (sessionStorage)
+   - 18+ age gate (sessionStorage)
    - cart (localStorage "pep_cart") + drawer with shipping math
    - quote/inquiry modal → POST /api/bookings/
    - COA viewer modal (image or embedded PDF)
@@ -11,7 +11,7 @@
 (function () {
   "use strict";
 
-  var CART_KEY = "pep_cart";
+  var CART_KEY = "pep_cart_aud";   // renamed on the AUD switch so USD-priced carts don't linger
   var AGE_KEY = "pep_age_ok";
   var COUPON_KEY = "pep_coupon";
   var body = document.body;
@@ -21,7 +21,7 @@
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
-  var money = function (n) { return "$" + Number(n).toFixed(2); };
+  var money = function (n) { return "A$" + Number(n).toFixed(2); };
 
   // Bundle tiers — mirrors backend/config.py BUNDLE_TIERS. Display only; the
   // server re-prices every line on submit.
@@ -201,6 +201,37 @@
     m.classList.add("show");
   }
 
+  // ─── Scroll reveals ────────────────────────────────────────────
+  function initReveals() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // tag the things worth animating, in document order
+    var targets = $$([
+      ".tested-stack .tb-block", ".sec-title", ".section > .wrap > .grid > .pcard",
+      ".trio .tr", ".tested-cards .tc", ".about-grid > *", ".faq-item",
+      ".closing > *", ".catalog-search", ".footer-grid.four > *"
+    ].join(","));
+
+    targets.forEach(function (el, i) {
+      if (el.hasAttribute("data-anim")) return;
+      var kind = el.closest(".about-grid") ? (el.matches(".about-photo") ? "right" : "left")
+               : el.matches(".pcard") ? "zoom" : "up";
+      el.setAttribute("data-anim", kind);
+      el.style.transitionDelay = ((i % 4) * 70) + "ms";
+    });
+
+    if (!("IntersectionObserver" in window)) {
+      targets.forEach(function (el) { el.classList.add("in"); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    targets.forEach(function (el) { io.observe(el); });
+  }
+
   // ─── Scroll-reveal statement (word-by-word fill) ───────────────
   function initReveal() {
     var section = $(".reveal-section");
@@ -222,40 +253,44 @@
     update();
   }
 
-  // ─── Holiday promo bar (auto-targets the next major US holiday) ──
+  // ─── Holiday promo bar (auto-targets the next Australian sale date) ──
   function nthWeekday(year, month, weekday, n) {   // month 0-11, weekday 0=Sun
     var first = new Date(year, month, 1);
     var offset = (weekday - first.getDay() + 7) % 7;
     return new Date(year, month, 1 + offset + (n - 1) * 7);
   }
-  function lastWeekday(year, month, weekday) {
-    var last = new Date(year, month + 1, 0);       // last day of month
-    var offset = (last.getDay() - weekday + 7) % 7;
-    return new Date(year, month, last.getDate() - offset);
+  function easterSunday(year) {                    // Anonymous Gregorian algorithm
+    var a = year % 19, b = Math.floor(year / 100), c = year % 100;
+    var d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+    var g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+    var i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+    var m = Math.floor((a + 11 * h + 22 * l) / 451);
+    var month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
+    return new Date(year, month, ((h + l - 7 * m + 114) % 31) + 1);
   }
-  function usHolidays(year) {
-    var thanks = nthWeekday(year, 10, 4, 4);        // 4th Thursday of Nov
+  function auHolidays(year) {
+    var easter = easterSunday(year);
+    var thanks = nthWeekday(year, 10, 4, 4);        // Black Friday follows US Thanksgiving
     return [
-      { name: "New Year's",       date: new Date(year, 0, 1) },
-      { name: "MLK Day",          date: nthWeekday(year, 0, 1, 3) },
-      { name: "Valentine's Day",  date: new Date(year, 1, 14) },
-      { name: "Presidents' Day",  date: nthWeekday(year, 1, 1, 3) },
-      { name: "Memorial Day",     date: lastWeekday(year, 4, 1) },
-      { name: "Juneteenth",       date: new Date(year, 5, 19) },
-      { name: "Independence Day", date: new Date(year, 6, 4) },
-      { name: "Labor Day",        date: nthWeekday(year, 8, 1, 1) },
-      { name: "Halloween",        date: new Date(year, 9, 31) },
-      { name: "Veterans Day",     date: new Date(year, 10, 11) },
-      { name: "Thanksgiving",     date: thanks },
-      { name: "Black Friday",     date: new Date(year, 10, thanks.getDate() + 1) },
-      { name: "Cyber Monday",     date: new Date(year, 10, thanks.getDate() + 4) },
-      { name: "Christmas",        date: new Date(year, 11, 25) },
-      { name: "New Year's Eve",   date: new Date(year, 11, 31) }
+      { name: "New Year's",      date: new Date(year, 0, 1) },
+      { name: "Australia Day",   date: new Date(year, 0, 26) },
+      { name: "Valentine's Day", date: new Date(year, 1, 14) },
+      { name: "Easter",          date: new Date(year, easter.getMonth(), easter.getDate() + 1) },
+      { name: "Mother's Day",    date: nthWeekday(year, 4, 0, 2) },
+      { name: "WA Day",          date: nthWeekday(year, 5, 1, 1) },
+      { name: "EOFY",            date: new Date(year, 5, 30) },
+      { name: "Father's Day",    date: nthWeekday(year, 8, 0, 1) },
+      { name: "Halloween",       date: new Date(year, 9, 31) },
+      { name: "Black Friday",    date: new Date(year, 10, thanks.getDate() + 1) },
+      { name: "Cyber Monday",    date: new Date(year, 10, thanks.getDate() + 4) },
+      { name: "Christmas",       date: new Date(year, 11, 25) },
+      { name: "Boxing Day",      date: new Date(year, 11, 26) },
+      { name: "New Year's Eve",  date: new Date(year, 11, 31) }
     ];
   }
   function nextHoliday() {
     var now = new Date();
-    var list = usHolidays(now.getFullYear()).concat(usHolidays(now.getFullYear() + 1));
+    var list = auHolidays(now.getFullYear()).concat(auHolidays(now.getFullYear() + 1));
     for (var i = 0; i < list.length; i++) {
       var d = list[i].date;
       var end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59).getTime();

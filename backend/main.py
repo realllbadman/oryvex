@@ -54,13 +54,18 @@ BUSINESS = {
     "direct_digits": _digits(_DIRECT),               # for sms:/tel:
     "direct_display": "+" + _digits(_DIRECT),        # always compact: +13184578486
     "min_order": env_num("MIN_ORDER", "0"),
-    "free_ship_threshold": env_num("FREE_SHIP_THRESHOLD", "250"),
+    # Where the business is based. BUSINESS_ADDRESS is optional — only shown
+    # when set, so the site never displays an address that isn't really yours.
+    "location": env_str("BUSINESS_LOCATION", "Perth, Western Australia"),
+    "address": env_str("BUSINESS_ADDRESS", ""),
+    "currency": "AUD",
+    "free_ship_threshold": env_num("FREE_SHIP_THRESHOLD", "350"),
     "flat_shipping": env_num("FLAT_SHIPPING", "15"),
-    "ship_priority": env_num("SHIP_PRIORITY", "20"),
-    "ship_overnight": env_num("SHIP_OVERNIGHT", "60"),
+    "ship_priority": env_num("SHIP_PRIORITY", "15"),
+    "ship_overnight": env_num("SHIP_OVERNIGHT", "25"),
     "insurance_fee": env_num("INSURANCE_FEE", "15"),
     "payment_methods": env_list(
-        "PAYMENT_METHODS", "Cash App,Zelle,Apple Pay,Chime,PayPal,Bitcoin"),
+        "PAYMENT_METHODS", "Bank Transfer,Osko,PayID,Bitcoin"),
 }
 
 CATEGORIES = [

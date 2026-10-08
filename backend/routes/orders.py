@@ -22,24 +22,26 @@ from backend.services.coupons import validate_coupon
 
 router = APIRouter()
 
-MIN_ORDER = env_num("MIN_ORDER", "150")
-FREE_SHIP_THRESHOLD = env_num("FREE_SHIP_THRESHOLD", "300")
+MIN_ORDER = env_num("MIN_ORDER", "0")
+FREE_SHIP_THRESHOLD = env_num("FREE_SHIP_THRESHOLD", "350")
 INSURANCE_FEE = env_num("INSURANCE_FEE", "15")
 
-# Selectable shipping methods: key -> (label, price). Prices are env-overridable.
+# Selectable shipping methods (within Australia, dispatched from Perth):
+# key -> (label, price in AUD). Keys are kept stable so older carts still post
+# valid values; prices are env-overridable.
 SHIPPING_METHODS = {
-    "free": ("Free Standard Shipping (business days)", 0.0),
-    "priority": ("Priority Shipping — 2-3 business days",
-                 env_num("SHIP_PRIORITY", "20")),
-    "overnight": ("Overnight Shipping — next business day",
-                  env_num("SHIP_OVERNIGHT", "60")),
+    "free": ("Free Standard Tracked Shipping — Australia Post", 0.0),
+    "priority": ("Standard Tracked — Australia Post, 2-6 business days",
+                 env_num("SHIP_PRIORITY", "15")),
+    "overnight": ("Express Post — 1-3 business days",
+                  env_num("SHIP_OVERNIGHT", "25")),
 }
 
 
-# Flat international freight surcharge by region (added on top of shipping).
+# Flat international freight in AUD by region (replaces domestic shipping).
 FREIGHT_REGIONS = {
-    "domestic": 0.0, "us": 0.0, "canada": 100.0, "latam": 150.0,
-    "europe": 175.0, "uk": 175.0, "asia": 200.0, "oceania": 250.0, "other": 250.0,
+    "domestic": 0.0, "nz": 40.0, "asia": 120.0, "north_america": 180.0,
+    "europe": 180.0, "uk": 180.0, "latam": 220.0, "other": 220.0,
 }
 
 
@@ -99,7 +101,7 @@ def create_order(
     if MIN_ORDER and subtotal < MIN_ORDER:
         raise HTTPException(
             status_code=400,
-            detail=f"Minimum order is ${MIN_ORDER:,.0f}. Your subtotal is ${subtotal:,.2f}.",
+            detail=f"Minimum order is A${MIN_ORDER:,.0f}. Your subtotal is A${subtotal:,.2f}.",
         )
 
     # Re-validate any coupon server-side (never trust the client's discount).

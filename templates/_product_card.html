@@ -40,8 +40,8 @@
     {% endif %}
     <div class="price-row">
       <div class="price">
-        {% if p.original_price and p.original_price > p.price %}<span class="strike">${{ '%.2f'|format(p.original_price) }}</span>{% endif %}
-        <span class="amt">${{ '%.2f'|format(p.price) }}</span>
+        {% if p.original_price and p.original_price > p.price %}<span class="strike">A${{ '%.2f'|format(p.original_price) }}</span>{% endif %}
+        <span class="amt">A${{ '%.2f'|format(p.price) }}</span>
       </div>
     </div>
   </div>

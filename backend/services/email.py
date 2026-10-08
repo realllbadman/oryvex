@@ -30,7 +30,7 @@ OWNER_PHONE = os.getenv("OWNER_PHONE", "")
 WHATSAPP = os.getenv("WHATSAPP", "")
 PAYMENT_METHODS = [m.strip() for m in os.getenv(
     "PAYMENT_METHODS",
-    "Apple Pay,Chime,CashApp,Zelle,Venmo,Bitcoin (Crypto),E-Transfer"
+    "Bank Transfer,Osko,PayID,Bitcoin"
 ).split(",") if m.strip()]
 
 DISCLAIMER = (
@@ -83,8 +83,8 @@ def _rows(items) -> str:
             f'<td style="padding:8px 10px;border-bottom:1px solid #e6e0f2;">{name}</td>'
             f'<td style="padding:8px 10px;border-bottom:1px solid #e6e0f2;">{strength or "—"}</td>'
             f'<td style="padding:8px 10px;border-bottom:1px solid #e6e0f2;text-align:center;">{qty}</td>'
-            f'<td style="padding:8px 10px;border-bottom:1px solid #e6e0f2;text-align:right;">${float(unit):,.2f}</td>'
-            f'<td style="padding:8px 10px;border-bottom:1px solid #e6e0f2;text-align:right;">${line:,.2f}</td>'
+            f'<td style="padding:8px 10px;border-bottom:1px solid #e6e0f2;text-align:right;">A${float(unit):,.2f}</td>'
+            f'<td style="padding:8px 10px;border-bottom:1px solid #e6e0f2;text-align:right;">A${line:,.2f}</td>'
             f'</tr>'
         )
     return "".join(out)
@@ -95,26 +95,26 @@ def _items_table(items, total: float, shipping: float,
                  insurance: float = 0.0, ship_name: str = "Shipping",
                  freight: float = 0.0) -> str:
     subtotal = round(total - shipping - insurance - freight + discount, 2)
-    ship_price_txt = "FREE" if shipping == 0 else f"${shipping:,.2f}"
+    ship_price_txt = "FREE" if shipping == 0 else f"A${shipping:,.2f}"
     discount_row = ""
     freight_row = ""
     if freight and freight > 0:
         freight_row = (
             '<tr><td colspan="4" style="padding:8px 10px;text-align:right;">International freight</td>'
-            f'<td style="padding:8px 10px;text-align:right;">${freight:,.2f}</td></tr>'
+            f'<td style="padding:8px 10px;text-align:right;">A${freight:,.2f}</td></tr>'
         )
     insurance_row = ""
     if insurance and insurance > 0:
         insurance_row = (
             '<tr><td colspan="4" style="padding:8px 10px;text-align:right;">Shipping insurance</td>'
-            f'<td style="padding:8px 10px;text-align:right;">${insurance:,.2f}</td></tr>'
+            f'<td style="padding:8px 10px;text-align:right;">A${insurance:,.2f}</td></tr>'
         )
     if discount and discount > 0:
         code_txt = f" ({coupon_code})" if coupon_code else ""
         discount_row = (
             f'<tr style="color:#22c55e;"><td colspan="4" style="padding:8px 10px;text-align:right;">'
             f'Discount{code_txt}</td>'
-            f'<td style="padding:8px 10px;text-align:right;">-${discount:,.2f}</td></tr>'
+            f'<td style="padding:8px 10px;text-align:right;">-A${discount:,.2f}</td></tr>'
         )
     return f"""\
 <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;">
@@ -130,7 +130,7 @@ def _items_table(items, total: float, shipping: float,
   <tbody>{_rows(items)}</tbody>
   <tfoot>
     <tr><td colspan="4" style="padding:8px 10px;text-align:right;">Subtotal</td>
-        <td style="padding:8px 10px;text-align:right;">${subtotal:,.2f}</td></tr>
+        <td style="padding:8px 10px;text-align:right;">A${subtotal:,.2f}</td></tr>
     {discount_row}
     <tr><td colspan="4" style="padding:8px 10px;text-align:right;">Shipping ({ship_name})</td>
         <td style="padding:8px 10px;text-align:right;">{ship_price_txt}</td></tr>
@@ -138,7 +138,7 @@ def _items_table(items, total: float, shipping: float,
     {insurance_row}
     <tr style="font-weight:700;color:#4a2f8f;">
         <td colspan="4" style="padding:8px 10px;text-align:right;">Total</td>
-        <td style="padding:8px 10px;text-align:right;">${total:,.2f}</td></tr>
+        <td style="padding:8px 10px;text-align:right;">A${total:,.2f}</td></tr>
   </tfoot>
 </table>"""
 
@@ -226,7 +226,7 @@ payment.</p>
 {" &middot; ".join(PAYMENT_METHODS)}.</p>
 {_items_table(items, total, shipping, discount, coupon_code, insurance, ship_label, freight)}
 <p style="color:#8b83a3;font-size:13px;">By submitting this order you confirmed
-you are 21+ and that these products are for laboratory research use only.</p>"""
+you are 18+ and that these products are for laboratory research use only.</p>"""
     return await _send(_g(customer, "email"), f"Order received — {BUSINESS_NAME}",
                        _base_html("Order received", body))
 
@@ -256,6 +256,6 @@ async def send_order_owner_notification(customer, items, total, shipping,
   <tr><td style="color:#8b83a3;padding:4px 0;vertical-align:top;">Notes</td><td>{_g(customer,'notes') or '—'}</td></tr>
 </table>
 {_items_table(items, total, shipping, discount, coupon_code, insurance, ship_label, freight)}
-<p style="color:#22c55e;font-size:13px;">✔ Customer confirmed 21+ and laboratory research use.</p>"""
+<p style="color:#22c55e;font-size:13px;">✔ Customer confirmed 18+ and laboratory research use.</p>"""
     return await _send(OWNER_EMAIL, "NEW ORDER — CONTACT CUSTOMER",
                        _base_html("New order", body))

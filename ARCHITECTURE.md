@@ -12,7 +12,7 @@ A server-rendered, multi-page **research-use-only peptide storefront** with an
 **admin-contact order flow**: customers place an order online, **no payment is
 taken on the site**, the owner gets an email and contacts the customer to confirm
 stock and arrange payment (crypto / Zelle / CashApp / etc.). Compliance is
-structural, not decoration: 21+ age gate, "Research Use Only" everywhere, COA
+structural, not decoration: 18+ age gate, "Research Use Only" everywhere, COA
 viewer per product, and a global disclaimer.
 
 ---
@@ -98,7 +98,7 @@ Config flows **`.env` → `BUSINESS` dict (main.py) → every template via `_ctx
 (FileResponse), `/admin` (FileResponse).
 
 **API:**
-- `POST /api/orders/` — validates 21+, enforces `MIN_ORDER`, re-validates coupon
+- `POST /api/orders/` — validates 18+, enforces `MIN_ORDER`, re-validates coupon
   server-side, computes shipping (method or international freight) + insurance,
   saves order, fires 2 emails via BackgroundTasks.
 - `POST /api/bookings/` — inquiry; fires owner + customer emails.
@@ -158,7 +158,7 @@ name, ctx)` signature (Python 3.12 fix). Assets are cache-busted via
 product filters + category chips, product-detail **size dropdown**, COA viewer,
 best-seller carousel, toasts. `checkout.html` has its own inline script for the
 order form (totals, shipping method/insurance/freight, coupon apply, min-order and
-21+ validation with on-screen messages).
+18+ validation with on-screen messages).
 
 ## 10. Design system (`main.css`)
 
@@ -173,7 +173,7 @@ re-skin a new site, mostly you change these tokens + fonts + `BUSINESS_NAME`.
 
 - **Age gate** — full-screen modal, `sessionStorage` flag; shows once per session.
 - **Cart** — localStorage, drawer with subtotal/shipping/total.
-- **Checkout** — min-order gate ("add $X more"), 21+ required (both warn on click),
+- **Checkout** — min-order gate ("add $X more"), 18+ required (both warn on click),
   **shipping model**: Free (≥ threshold) / Priority / Overnight, optional insurance,
   and **international freight replaces domestic shipping** (no double charge);
   coupon field; **payment-method picker** (from `PAYMENT_METHODS`, + "Other").
@@ -197,7 +197,7 @@ re-skin a new site, mostly you change these tokens + fonts + `BUSINESS_NAME`.
 
 ## 12. Order flow (no online payment)
 
-Add to cart → checkout (contact + shipping + payment method + 21+) → `POST /api/orders/`
+Add to cart → checkout (contact + shipping + payment method + 18+) → `POST /api/orders/`
 → order saved + **owner emailed "NEW ORDER — CONTACT CUSTOMER"** + customer emailed a
 receipt ("no payment taken yet") → owner confirms stock and arranges payment manually
 → status updated in admin. **No card processing anywhere.**
@@ -218,7 +218,7 @@ the certbot-vhost gotcha.)
 ## 14. Compliance (required structural features for any peptide site)
 
 These are not optional — build them in and keep them truthful:
-1. **21+ age gate** blocking entry.
+1. **18+ age gate** blocking entry.
 2. **"Research Use Only — not for human consumption"** on every product; no dosing /
    human-use / treatment claims anywhere.
 3. **COA viewer per product** — only display **real** lab certificates; "COA pending"

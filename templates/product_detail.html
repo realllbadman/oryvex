@@ -34,7 +34,7 @@
       <div class="pd-info">
         <h1 class="pd-title">{{ product.name }}</h1>
         <p class="pd-range">
-          {% if product.variants and hi > product.price %}${{ '%.2f'|format(product.price) }} – ${{ '%.2f'|format(hi) }}{% else %}${{ '%.2f'|format(product.price) }}{% endif %}
+          {% if product.variants and hi > product.price %}A${{ '%.2f'|format(product.price) }} – A${{ '%.2f'|format(hi) }}{% else %}A${{ '%.2f'|format(product.price) }}{% endif %}
         </p>
 
         {% if product.coa_file %}
@@ -60,10 +60,10 @@
         {% endif %}
 
         <div class="pd-price">
-          <span class="now">$<span id="pdPrice">{{ '%.2f'|format(first.price if first else product.price) }}</span></span>
+          <span class="now">A$<span id="pdPrice">{{ '%.2f'|format(first.price if first else product.price) }}</span></span>
           {% if product.original_price and product.original_price > product.price %}
-          <span class="was" id="pdWas">${{ '%.2f'|format(product.original_price) }}</span>
-          <span class="save-badge" id="pdSave">Save ${{ '%.2f'|format(product.original_price - product.price) }}</span>
+          <span class="was" id="pdWas">A${{ '%.2f'|format(product.original_price) }}</span>
+          <span class="save-badge" id="pdSave">Save A${{ '%.2f'|format(product.original_price - product.price) }}</span>
           {% else %}
           <span class="was" id="pdWas" hidden></span>
           <span class="save-badge" id="pdSave" hidden></span>
@@ -116,7 +116,7 @@
             data-image="{{ product.image }}?v={{ asset_v }}">
             <span>Add to cart</span>
             <span class="atc-sep">·</span>
-            <span id="atcPrice">${{ '%.2f'|format(first.price if first else product.price) }}</span>
+            <span id="atcPrice">A${{ '%.2f'|format(first.price if first else product.price) }}</span>
             <span class="atc-arrow">→</span>
           </button>
           {% else %}
@@ -125,8 +125,8 @@
         </div>
 
         <p class="pd-ship-note">
-          Orders placed before 2pm ET ship the same business day.
-          Free shipping at ${{ '%.0f'|format(business.free_ship_threshold) }}.
+          Orders placed before 2pm AWST ship the same business day from Perth.
+          Free shipping at A${{ '%.0f'|format(business.free_ship_threshold) }}.
         </p>
 
         <div class="promo-card">
@@ -197,7 +197,7 @@
         '<span class="rev-stars">' + stars(d.average) + '</span> <b>' + d.average +
         '</b> <span class="muted">out of 5 · ' + d.count + ' review' + (d.count === 1 ? '' : 's') + '</span>';
       document.getElementById("revList").innerHTML = (d.reviews || []).map(function (rv) {
-        var date = new Date(rv.created_at).toLocaleDateString();
+        var date = new Date(rv.created_at).toLocaleDateString("en-AU");
         return '<div class="rev-item"><div class="rev-item-head"><span class="rev-stars">' + stars(rv.rating) +
           '</span> <b>' + esc(rv.title || "") + '</b></div>' +
           '<div class="rev-meta">' + esc(rv.name) + ' · ' + date + '</div>' +
