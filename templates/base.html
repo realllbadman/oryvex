@@ -39,12 +39,12 @@
   <!-- ── Sale bar with live countdown ── -->
   <div class="promobar" id="promoBar">
     <span class="pb-spark"></span>
-    <span class="pb-sale promo-text">Sale</span>
-    <span class="pb-div">|</span>
-    <span class="pb-offer">Buy 1 Get 1 Free</span>
+    <span class="pb-offer">{{ '%g'|format(business.promo_percent) }}% Off</span>
     <span class="pb-scope">Sitewide</span>
-    <span class="pb-ends">Ends in</span>
-    <span class="promo-chip" id="promoCountdown">--</span>
+    <span class="pb-div">|</span>
+    <span class="pb-ends">Use code</span>
+    <button type="button" class="promo-chip promo-code" id="promoCode" data-code="{{ business.promo_code }}"
+            title="Click to apply at checkout">{{ business.promo_code }}</button>
     <span class="pb-flag">🇦🇺</span>
   </div>
 

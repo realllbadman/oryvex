@@ -1,7 +1,7 @@
 /* ============================================================================
    Oryvex Research — CRIMSON / near-black design system
    Outfit is the single type family (headings, body, UI); IBM Plex Mono is used
-   only for the promo countdown chip. Loaded via <link> in base.html.
+   only for the promo code chip. Loaded via <link> in base.html.
    ========================================================================== */
 :root {
   /* page + cards */
@@ -1015,6 +1015,7 @@ body { background: #fff; }
   background: #fff; color: #181818; border-radius: 30px; padding: 4px 14px;
   font-family: var(--mono); font-size: 12px; letter-spacing: 0; font-weight: 600;
 }
+.promobar .promo-code { border: 0; cursor: pointer; font-family: inherit; }
 .promobar .pb-flag { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 20px; line-height: 1; }
 .promobar .pb-spark { position: absolute; inset: 0; pointer-events: none; opacity: .5;
   background-image: radial-gradient(1.5px 1.5px at 12% 30%, #fff 40%, transparent 41%),
@@ -1302,7 +1303,7 @@ body { background: #fff; }
   .trio { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; gap: 34px; }
   .promobar { font-size: 11.5px; gap: 8px; padding: 10px 40px; flex-wrap: wrap; }
-  .promobar .pb-scope, .promobar .pb-ends { display: none; }
+  .promobar .pb-scope { display: none; }
   .hero-dark { min-height: 520px; background-position: 72% center; }
 }
 @media (max-width: 560px) {

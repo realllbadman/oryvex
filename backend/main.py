@@ -64,6 +64,9 @@ BUSINESS = {
     "ship_priority": env_num("SHIP_PRIORITY", "15"),
     "ship_overnight": env_num("SHIP_OVERNIGHT", "25"),
     "insurance_fee": env_num("INSURANCE_FEE", "15"),
+    # Top-bar offer: the code must exist (and be active) in Admin → Coupons.
+    "promo_code": env_str("PROMO_CODE", "RESEARCH20"),
+    "promo_percent": env_num("PROMO_PERCENT", "20"),
     "payment_methods": env_list(
         "PAYMENT_METHODS", "Bank Transfer,Osko,PayID,Bitcoin"),
 }

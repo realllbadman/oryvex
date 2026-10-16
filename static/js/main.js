@@ -253,69 +253,15 @@
     update();
   }
 
-  // ─── Holiday promo bar (auto-targets the next Australian sale date) ──
-  function nthWeekday(year, month, weekday, n) {   // month 0-11, weekday 0=Sun
-    var first = new Date(year, month, 1);
-    var offset = (weekday - first.getDay() + 7) % 7;
-    return new Date(year, month, 1 + offset + (n - 1) * 7);
-  }
-  function easterSunday(year) {                    // Anonymous Gregorian algorithm
-    var a = year % 19, b = Math.floor(year / 100), c = year % 100;
-    var d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
-    var g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
-    var i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
-    var m = Math.floor((a + 11 * h + 22 * l) / 451);
-    var month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
-    return new Date(year, month, ((h + l - 7 * m + 114) % 31) + 1);
-  }
-  function auHolidays(year) {
-    var easter = easterSunday(year);
-    var thanks = nthWeekday(year, 10, 4, 4);        // Black Friday follows US Thanksgiving
-    return [
-      { name: "New Year's",      date: new Date(year, 0, 1) },
-      { name: "Australia Day",   date: new Date(year, 0, 26) },
-      { name: "Valentine's Day", date: new Date(year, 1, 14) },
-      { name: "Easter",          date: new Date(year, easter.getMonth(), easter.getDate() + 1) },
-      { name: "Mother's Day",    date: nthWeekday(year, 4, 0, 2) },
-      { name: "WA Day",          date: nthWeekday(year, 5, 1, 1) },
-      { name: "EOFY",            date: new Date(year, 5, 30) },
-      { name: "Father's Day",    date: nthWeekday(year, 8, 0, 1) },
-      { name: "Halloween",       date: new Date(year, 9, 31) },
-      { name: "Black Friday",    date: new Date(year, 10, thanks.getDate() + 1) },
-      { name: "Cyber Monday",    date: new Date(year, 10, thanks.getDate() + 4) },
-      { name: "Christmas",       date: new Date(year, 11, 25) },
-      { name: "Boxing Day",      date: new Date(year, 11, 26) },
-      { name: "New Year's Eve",  date: new Date(year, 11, 31) }
-    ];
-  }
-  function nextHoliday() {
-    var now = new Date();
-    var list = auHolidays(now.getFullYear()).concat(auHolidays(now.getFullYear() + 1));
-    for (var i = 0; i < list.length; i++) {
-      var d = list[i].date;
-      var end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59).getTime();
-      if (end >= now.getTime()) return { name: list[i].name, end: end };
-    }
-    return null;
-  }
-  function initPromoCountdown() {
-    var el = $("#promoCountdown");
-    var textEl = $(".promo-text");
-    if (!el) return;
-    function tick() {
-      var h = nextHoliday();
-      if (!h) return;
-      if (textEl) textEl.textContent = h.name + " Sale";
-      var remaining = Math.max(0, h.end - Date.now());
-      var s = Math.floor(remaining / 1000);
-      var d = Math.floor(s / 86400); s -= d * 86400;
-      var hh = Math.floor(s / 3600); s -= hh * 3600;
-      var m = Math.floor(s / 60); s -= m * 60;
-      var pad = function (n) { return (n < 10 ? "0" : "") + n; };
-      el.textContent = d + "d " + pad(hh) + "h " + pad(m) + "m " + pad(s) + "s";
-    }
-    tick();
-    setInterval(tick, 1000);
+  // ─── Promo bar: click the code to apply it ─────────────────────
+  function initPromoCode() {
+    var btn = $("#promoCode");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var code = btn.getAttribute("data-code");
+      setCoupon(code);
+      toast("Code " + code + " applied — it'll be used at checkout.");
+    });
   }
 
   // ─── Coupons + announcement bar ────────────────────────────────
@@ -713,7 +659,7 @@
     initProductDetail();
     initReveals();
     captureCouponFromUrl();
-    initPromoCountdown();
+    initPromoCode();
     initReveal();
   });
 
