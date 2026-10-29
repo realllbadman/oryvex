@@ -1,4 +1,4 @@
-"""Email service (Gmail STARTTLS 587) for the admin-contact order flow.
+"""Email service (STARTTLS 587 or implicit-SSL 465) for the admin-contact order flow.
 
 Four senders:
   1. send_customer_confirmation(booking)         → inquiry / COA-request receipt
@@ -154,11 +154,16 @@ async def _send(to: str, subject: str, html: str) -> bool:
     msg.set_content("This message requires an HTML-capable email client.")
     msg.add_alternative(html, subtype="html")
     try:
+        # Port 465 speaks TLS from the first byte (implicit SSL); 587 (and
+        # others) start plaintext and upgrade with STARTTLS. Pick the right
+        # mode from the port so Gmail (587) and Hostinger (465) both work.
+        use_ssl = SMTP_PORT == 465
         await aiosmtplib.send(
             msg,
             hostname=SMTP_HOST,
             port=SMTP_PORT,
-            start_tls=True,
+            use_tls=use_ssl,
+            start_tls=(not use_ssl),
             username=SMTP_USER,
             password=SMTP_PASSWORD,
             timeout=20,
