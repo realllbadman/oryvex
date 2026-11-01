@@ -64,6 +64,9 @@
         <span><span class="tick">✓</span>For In Vitro Research Use Only</span>
       </div>
       <div class="ts-right">
+        {% if business.whatsapp_digits %}<a class="ts-contact" href="https://wa.me/{{ business.whatsapp_digits }}" target="_blank" rel="noopener">
+          <span class="ts-ic">💬</span> WhatsApp {{ business.whatsapp_display }}
+        </a>{% endif %}
       </div>
     </div>
   </div>
@@ -159,6 +162,7 @@
             <input type="email" name="email" placeholder="Enter your email address..." required />
             <button type="submit" aria-label="Subscribe">→</button>
           </form>
+          {% if business.whatsapp_digits %}<p class="f-blurb" style="margin-top:16px;"><a class="f-mail" href="https://wa.me/{{ business.whatsapp_digits }}" target="_blank" rel="noopener">💬 WhatsApp {{ business.whatsapp_display }}</a></p>{% endif %}
         </div>
       </div>
 
